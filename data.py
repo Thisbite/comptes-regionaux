@@ -112,7 +112,7 @@ def enregistrer_utilisateur(username, password, role):
                       VALUES (?, ?, ?)''', (username, password_hashed, role))
     conn.commit()
 
-#enregistrer_utilisateur("admin","admin", "admin")
+#enregistrer_utilisateur("admin2","admin2", "admin")
 def verifier_utilisateur(username, password):
     password_encoded = password.encode('utf-8')
     password_hashed = hashlib.sha256(password_encoded).hexdigest()
