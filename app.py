@@ -1,7 +1,6 @@
 import streamlit as st
 import data
 import pandas as pd
-import matplotlib.pyplot as plt
 
 # Titre de l'application
 st.set_page_config(page_title="comptes regionaux", page_icon="👗", layout="wide")
