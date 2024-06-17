@@ -1,136 +1,180 @@
 import streamlit as st
 import data
+import pandas as pd
+import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Enquête Emploi ménage", page_icon="👗", layout="wide")
+# Titre de l'application
+st.set_page_config(page_title="comptes regionaux", page_icon="👗", layout="wide")
+st.title("Données des comptes régionaux : Section agriculture vivrière")
 
 st.sidebar.title("Menu")
-page = st.sidebar.selectbox("Choisir une page",
-                                ["Enregistrer ZD","Performance Equipe"])
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
 
+if not st.session_state['logged_in']:
+    page = st.sidebar.selectbox("Choisir une page", ["Connexion"])
+else:
+    if st.session_state['role'] == 'admin':
+        page = st.sidebar.selectbox("Choisir une page",
+                                    ["Saisi de données", "Importer le fichier Excel", "Statistiques","Modifier données","Enregistrement"])
+    elif st.session_state['role'] == 'employe':
+        page = st.sidebar.selectbox("Choisir une page", ["Performance des Ouvriers"])
 
-equipe=["Equipe 1","Equipe 2","Equipe 3","Equipe 4","Equipe 5","Equipe 6",]
-# Initialisation de l'état de confirmation pour la suppression
-if 'confirm_delete' not in st.session_state:
-    st.session_state.confirm_delete = None
+if page == "Connexion":
+    st.header("Connexion des Utilisateurs")
 
-if 'edit_performance' not in st.session_state:
-    st.session_state.edit_performance = {}
-# Titre de l'application
-st.title("Application de suivi ")
+    with st.form("connexion_utilisateur"):
+        username = st.text_input("Nom d'utilisateur")
+        password = st.text_input("Mot de passe", type="password")
+        submitted = st.form_submit_button("Se connecter")
 
-if page=="Enregistrer ZD":
-    # Section pour enregistrer une nouvelle zone de dénombrement
-    st.header("Enregistrer une nouvelle Zone de Dénombrement")
+        if submitted:
+            user = data.verifier_utilisateur(username, password)
+            if user:
+                st.session_state['logged_in'] = True
+                st.session_state['role'] = user['role']  # Store the user role
+                st.success("Connexion réussie.")
+                st.experimental_rerun()
+            else:
+                st.error("Nom d'utilisateur ou mot de passe incorrect.")
 
-    with st.form("zone_denombrement_form"):
-        region = st.text_input("Région")
-        departement = st.text_input("Département")
-        sous_prefecture = st.text_input("Sous-préfecture")
-        zone_D = st.text_input("Zone de Dénombrement")
+elif page == "Enregistrement" and st.session_state['logged_in']:
+    st.header("Enregistrement des Utilisateurs")
+
+    with st.form("enregistrement_utilisateur"):
+        username = st.text_input("Nom d'utilisateur")
+        password = st.text_input("Mot de passe", type="password")
+        role = st.selectbox("Rôle", ["admin", "agent"])
         submitted = st.form_submit_button("Enregistrer")
 
         if submitted:
-            if region and departement and sous_prefecture and zone_D:
-                if data.enregistrer_zone_denombrement(region, departement, sous_prefecture, zone_D):
-                    st.success("Zone de Dénombrement enregistrée avec succès.")
-                else:
-                    st.error("Cette Zone de Dénombrement existe déjà.")
+            if username and password and role:
+                data.enregistrer_utilisateur(username, password, role)
+                st.success("Utilisateur enregistré avec succès.")
             else:
                 st.error("Veuillez remplir tous les champs.")
 
 
-else:
-# Section pour enregistrer une nouvelle performance
-    st.markdown('<h2 style="color: blue;">Enregistrer une nouvelle Performance</h2>', unsafe_allow_html=True)
-
-    with st.form("performance_form"):
-        region = st.selectbox("Choisir la région",options=data.obtenir_region())
-        departement = st.selectbox("Choisir le département",options=data.obtenir_departement())
-        sous_prefecture = st.selectbox("Choisir la sous-préfecture", options=data.obtenir_sous_prefecture())
-        zone_D = st.selectbox("Choisir la Zone de Dénombrement",options=data.obtenir_zone_D())
-        equipe = st.selectbox("Choisir votre Équipe",options=equipe)
-        segment_total = st.number_input("Segment Total", min_value=0)
-        segment_acheve = st.number_input("Segment Achevé", min_value=0)
-        segment_restant = st.number_input("Segment Restant", min_value=0)
-        nbre_menage_denombrer = st.number_input("Nombre de Ménages à Dénombrer", min_value=0)
-        nbre_menage_enquete = st.number_input("Nombre de Ménages Enquêtés", min_value=0)
-        nbre_individu_dans_menage_enquete = st.number_input("Nombre d’Individus dans les Ménages Enquêtés", min_value=0)
-        nbre_menage_absent = st.number_input("Nombre de Ménages Absents", min_value=0)
-        nbre_menage_ayant_refus = st.number_input("Nombre de Ménages Ayant Refusé", min_value=0)
-        nbre_individu_enquete_section_emploi = st.number_input("Nombre d’Individus Enquêtés (Section Emploi)", min_value=0)
-        nbre_individu_refus = st.number_input("Nombre d’Individus Ayant Refusé", min_value=0)
-        observation = st.text_area("Observation")
-        submitted = st.form_submit_button("Enregistrer")
-
-        if submitted:
-            if region and departement and sous_prefecture and zone_D and equipe:
-                data.enregistrer_performance(region, departement, sous_prefecture, zone_D, equipe, segment_total, segment_acheve, segment_restant,
-                                             nbre_menage_denombrer, nbre_menage_enquete, nbre_individu_dans_menage_enquete,
-                                             nbre_menage_absent, nbre_menage_ayant_refus, nbre_individu_enquete_section_emploi,
-                                             nbre_individu_refus, observation)
-                st.success("Statistique enregistrée avec succès.")
-            else:
-                st.error("Vous n'avez pas rempli région ou departement ou Zone de denombrement ou Equipe")
 
 
 
-        # Section pour afficher et modifier les performances enregistrées
-st.markdown('<h2 style="color: blue;">Mise à jour de la statistique</h2>', unsafe_allow_html=True)
+elif page=="Saisi de données":
+    # Formulaire d'entrée de données
+    with st.form("agriculture_vivriere_form"):
+        direction = st.text_input("Direction")
+        region = st.text_input("Région")
+        annee = st.text_input("Année")
+        codes = st.text_input("Codes")
+        libelle_produit = st.text_input("Libellé du produit")
+        quantite = st.number_input("Quantité", min_value=0.0)
+        valeur = st.number_input("Valeur", min_value=0.0)
+        prix_unitaire = st.number_input("Prix unitaire", min_value=0.0)
+        superficie = st.number_input("Superficie", min_value=0.0)
+        effectif = st.number_input("Effectif", min_value=0, step=1)
+        masse_salariale = st.number_input("Masse salariale", min_value=0.0)
 
-performance_data = data.obtenir_performances()
-if st.checkbox("Afficher les ZD à modifier"):
-    if not performance_data.empty:
-        for index, row in performance_data.iterrows():
-            col1, col2 = st.columns(2)
-            if st.checkbox(f"Afficher la ZD {row['Zone de Dénombrement']} {row['Sous-préfecture']}" ,key=f"formulaire_{row['ID']}"):
-                with col1:
-                    st.write("Sous-préfecture de :", row['Sous-préfecture'])
-                    st.write("ZD", row['Zone de Dénombrement'])
-                    if st.button(f"Modifier", key=f"modifier_{row['ID']}"):
-                        st.session_state.edit_performance[row['ID']] = True
+        submit_button = st.form_submit_button("Enregistrer")
 
-                if st.session_state.edit_performance.get(row['ID'], False):
-                    with st.form(f"modifier_form_{row['ID']}"):
-                        region = st.text_input("Région", value=row['Région'])
-                        departement = st.text_input("Département", value=row['Département'])
-                        sous_prefecture = st.text_input("Sous-préfecture", value=row['Sous-préfecture'])
-                        zone_D = st.text_input("Zone de Dénombrement", value=row['Zone de Dénombrement'])
-                        equipe = st.text_input("Équipe", value=row['Équipe'])
-                        segment_total = st.number_input("Segment Total", min_value=0, value=row['Segment Total'])
-                        segment_acheve = st.number_input("Segment Achevé", min_value=0, value=row['Segment Achevé'])
-                        segment_restant = st.number_input("Segment Restant", min_value=0, value=row['Segment Restant'])
-                        nbre_menage_denombrer = st.number_input("Nombre de Ménages à Dénombrer", min_value=0,
-                                                                value=row['Nombre de Ménages à Dénombrer'])
-                        nbre_menage_enquete = st.number_input("Nombre de Ménages Enquêtés", min_value=0,
-                                                              value=row['Nombre de Ménages Enquêtés'])
-                        nbre_individu_dans_menage_enquete = st.number_input("Nombre d’Individus dans les Ménages Enquêtés",
-                                                                            min_value=0, value=row[
-                                'Nombre d’Individus dans les Ménages Enquêtés'])
-                        nbre_menage_absent = st.number_input("Nombre de Ménages Absents", min_value=0,
-                                                             value=row['Nombre de Ménages Absents'])
-                        nbre_menage_ayant_refus = st.number_input("Nombre de Ménages Ayant Refusé", min_value=0,
-                                                                  value=row['Nombre de Ménages Ayant Refusé'])
-                        nbre_individu_enquete_section_emploi = st.number_input(
-                            "Nombre d’Individus Enquêtés (Section Emploi)", min_value=0,
-                            value=row['Nombre d’Individus Enquêtés (Section Emploi)'])
-                        nbre_individu_refus = st.number_input("Nombre d’Individus Ayant Refusé", min_value=0,
-                                                              value=row['Nombre d’Individus Ayant Refusé'])
-                        observation = st.text_area("Observation", value=row['Observation'])
-                        submitted = st.form_submit_button("Modifier")
+    # Enregistrement des données lorsque le bouton est cliqué
+    if submit_button:
+        data.enregistrer_agriculture_vivirier(direction, region, annee, codes, libelle_produit, quantite, valeur,
+                                              prix_unitaire, superficie, effectif, masse_salariale)
+        st.success("Les données ont été enregistrées avec succès!")
+elif page=="Importer le fichier Excel":
+    # Section pour télécharger un fichier Excel et enregistrer les données dans la base de données
+    st.subheader("Télécharger un fichier Excel")
+    uploaded_file = st.file_uploader("Télécharger un fichier Excel", type=["xlsx"])
 
-                        if submitted:
-                            data.modifier_performance(row['ID'], region, departement, sous_prefecture, zone_D, equipe,
-                                                      segment_total, segment_acheve, segment_restant,
-                                                      nbre_menage_denombrer, nbre_menage_enquete,
-                                                      nbre_individu_dans_menage_enquete,
-                                                      nbre_menage_absent, nbre_menage_ayant_refus,
-                                                      nbre_individu_enquete_section_emploi,
-                                                      nbre_individu_refus, observation)
-                            st.session_state.edit_performance[row['ID']] = False
-                            st.experimental_rerun()
+    if uploaded_file is not None:
+        # Lire le fichier Excel
+        df = pd.read_excel(uploaded_file)
 
-                            st.success("Performance modifiée avec succès.")
-                            # Refresh the page to show updated data
+        # Vérifier les colonnes du fichier
+        expected_columns = ["direction", "region", "annee", "codes", "libelle_produit",
+                            "quantite", "valeur", "prix_unitaire", "superficie",
+                            "effectif", "masse_salariale"]
 
-    else:
-        st.info("En attente de statistique....")
+        if all(column in df.columns for column in expected_columns):
+            # Afficher les données du fichier
+            st.dataframe(df)
+
+            # Bouton pour enregistrer les données dans la base de données
+            if st.button("Enregistrer les données dans la base de données"):
+                for _, row in df.iterrows():
+                    data.enregistrer_agriculture_vivirier(
+                        row['direction'], row['region'], row['annee'], row['codes'], row['libelle_produit'],
+                        row['quantite'], row['valeur'], row['prix_unitaire'], row['superficie'],
+                        row['effectif'], row['masse_salariale']
+                    )
+                st.success("Les données du fichier ont été enregistrées avec succès!")
+        else:
+            st.error(
+                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+elif page=="Statistiques":
+    st.subheader("Statistiques de la production de riz par région")
+    df_riz = data.obtenir_statistiques_riz()
+    st.write(df_riz)
+    st.write("Statistique par code du produit")
+    with st.form("code_form"):
+        code = st.selectbox("Choisir le code",options=data.obtenir_code())
+        submit_code = st.form_submit_button("Obtenir les statistiques")
+
+    # Affichage des statistiques lorsque le bouton est cliqué
+    if submit_code:
+        df_statistiques = data.obtenir_statistiques_par_code(code)
+        if not df_statistiques.empty:
+            st.write("Statistiques de production pour le code:", code)
+            st.write(df_statistiques)
+        else:
+            st.error("Aucune donnée trouvée pour ce code.")
+      # Affichage des données enregistrées
+    st.subheader("Notre base de données d'agriculture vivrière")
+    df_enregistrees = data.obtenir_agriculture_vivriere()
+    st.write(df_enregistrees)
+
+elif page=="Modifier données":
+    st.subheader("Modifier des enregistrements")
+    with st.form("modify_form"):
+        st.write("Recherche à partir d'ancienne données")
+        direction = st.selectbox("Choisir la DR",options=data.obtenir_direction())
+        annee = st.text_input("Année (pour trouver l'enregistrement à modifier)")
+        code = st.selectbox("Choisir le code",options=data.obtenir_code())
+
+        st.write("Entrez les nouvelles valeurs :")
+        new_direction = st.text_input("Nouvelle direction")
+        new_region = st.text_input("Nouvelle région")
+        new_annee = st.text_input("Nouvelle année")
+        new_code = st.text_input("Nouveau code")
+        new_libelle_produit = st.text_input("Nouveau libellé du produit")
+        new_quantite = st.number_input("Nouvelle quantité", min_value=0.0)
+        new_valeur = st.number_input("Nouvelle valeur", min_value=0.0)
+        new_prix_unitaire = st.number_input("Nouveau prix unitaire", min_value=0.0)
+        new_superficie = st.number_input("Nouvelle superficie", min_value=0.0)
+        new_effectif = st.number_input("Nouvel effectif", min_value=0, step=1)
+        new_masse_salariale = st.number_input("Nouvelle masse salariale", min_value=0.0)
+
+        submit_modify = st.form_submit_button("Modifier")
+
+    # Modification des données lorsque le bouton est cliqué
+    if submit_modify:
+        new_values = (new_direction, new_region, new_annee, new_code, new_libelle_produit, new_quantite, new_valeur,
+                      new_prix_unitaire, new_superficie, new_effectif, new_masse_salariale)
+        data.modifier_agriculture_vivriere(direction, annee, code, new_values)
+        st.success(
+            f"Les données pour la direction '{direction}', l'année '{annee}' et le code '{code}' ont été modifiées avec succès!")
+
+    # Affichage des données enregistrées
+
+elif st.checkbox("Supprimer une données"):
+    st.subheader("Supprimer des enregistrements")
+    with st.form("delete_form"):
+        direction = st.text_input("Direction")
+        annee = st.text_input("Année")
+        code = st.text_input("Code")
+        submit_delete = st.form_submit_button("Supprimer")
+
+    # Suppression des données lorsque le bouton est cliqué
+    if submit_delete:
+        data.supprimer_agriculture_vivriere(direction, annee, code)
+        st.success(
+            f"Les données pour la direction '{direction}', l'année '{annee}' et le code '{code}' ont été supprimées avec succès!")
