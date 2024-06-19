@@ -4,27 +4,57 @@ import hashlib
 
 DATABASE = "comptes_regionaux.db"
 
+
+def enregistrer_utilisateur(username, password, role):
+    password_hashed = hashlib.sha256(password.encode()).hexdigest()
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('''INSERT INTO utilisateurs (username, password, role)
+                      VALUES (?, ?, ?)''', (username, password_hashed, role))
+    conn.commit()
+    conn.close()
+
+def verifier_utilisateur(username, password):
+    password_encoded = password.encode('utf-8')
+    password_hashed = hashlib.sha256(password_encoded).hexdigest()
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT * FROM utilisateurs WHERE username=? AND password=?''', (username, password_hashed))
+    user = cursor.fetchone()
+    conn.close()
+    if user:
+        return {'id': user[0], 'username': user[1], 'role': user[3]}
+    return None
+
+
+
 def creer_table():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
+
+# Tableau 1.2.2 nombre de responsables politique departementaux
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS agriculture_vivrieres(
-        id INTEGER PRIMARY KEY ,
+        CREATE TABLE IF NOT EXISTS tab_n_respo_poltque_depart_sex(
+        id INTEGER PRIMARY KEY,
         direction TEXT,
         region TEXT,
         annee TEXT,
-        codes TEXT,
-        libelle_produit TEXT,
-        quantite REAL,
-        valeur REAL,
-        prix_unitaire REAL,
-        superficie REAL,
-        effectif INTEGER,
-        masse_salariale REAL 
+        partis_politique TEXT,
+        departement TEXT,
+        hommes TEXT,
+        femmes TEXT,
+        total_sexe TEXT
+        
         )
+        
         '''
     )
+
+
+
+
+
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS utilisateurs (
                         id INTEGER PRIMARY KEY,
@@ -33,6 +63,7 @@ def creer_table():
                         role TEXT
                       )''')
 
+# Faits civiques sur les naissance
     cursor.execute(
         '''
         CREATE TABLE IF NOT EXISTS existence_partis(
@@ -69,103 +100,38 @@ def creer_table():
     conn.commit()
     conn.close()
 
-def enregistrer_agriculture_vivirier(direction, region, annee, codes, libelle_produit, quantite, valeur,
-                                     prix_unitaire, superficie, effectif, masse_salariale):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO agriculture_vivrieres(direction, region, annee, codes, libelle_produit, quantite, valeur, prix_unitaire, superficie, effectif, masse_salariale)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?)''', (
-        direction, region, annee, codes, libelle_produit, quantite, valeur, prix_unitaire, superficie, effectif, masse_salariale)
-    )
-    conn.commit()
-    conn.close()
 
-def obtenir_agriculture_vivriere():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM agriculture_vivrieres')
-    data = cursor.fetchall()
-    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Année", "Codes", "Libellé du produit",
-                                     "Quantité", "Valeur", "Prix unitaire", "Superficie",
-                                     "Effectifs employés", "Masse salariale"])
-    conn.close()
-    return df
+
 
 # Créer la table
 creer_table()
 
-def obtenir_statistiques_riz():
+
+def enregistrer_tab_respo_pltq_dep(direction,region,annee,partis_politique,departement,hommes,femmes,total_sexe):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('''
-        SELECT region, annee, SUM(quantite) as quantite
-        FROM agriculture_vivrieres
-        WHERE codes = 'A01001000'
-        GROUP BY region, annee
-        ORDER BY quantite DESC
-    ''')
+    cursor.execute(
+        '''
+        INSERT INTO tab_n_respo_poltque_depart_sex (direction, region, annee, partis_politique, departement, hommes, femmes, total_sexe)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''',
+        (direction, region, annee,partis_politique, departement, hommes, femmes,total_sexe)
+    )
+    conn.commit()
+    conn.close()
+
+def obtenir_tab_respo_poltque_depart_sex():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab_n_respo_poltque_depart_sex')
     data = cursor.fetchall()
-    df = pd.DataFrame(data, columns=["region", "Année", "quantite"])
+    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Année", "Partis Politique", "Département", "Hommes", "Femmes", "Total Sexe"])
     conn.close()
     return df
 
-def obtenir_statistiques_par_code(code):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT region, annee, SUM(quantite) as quantite
-        FROM agriculture_vivrieres
-        WHERE codes = ?
-        GROUP BY region, annee
-        ORDER BY annee, quantite DESC
-    ''', (code,))
-    dat = cursor.fetchall()
-    df = pd.DataFrame(dat, columns=["region", "Année", "quantite"])
-    conn.close()
-    return df
 
-def modifier_agriculture_vivriere(direction, annee, code, new_values):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        UPDATE agriculture_vivrieres
-        SET direction = ?, region = ?, annee = ?, codes = ?, libelle_produit = ?, quantite = ?, valeur = ?, prix_unitaire = ?, superficie = ?, effectif = ?, masse_salariale = ?
-        WHERE direction = ? AND annee = ? AND codes = ?
-    ''', (*new_values, direction, annee, code))
-    conn.commit()
-    conn.close()
 
-def supprimer_agriculture_vivriere(direction, annee, code):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        DELETE FROM agriculture_vivrieres
-        WHERE direction = ? AND annee = ? AND codes = ?
-    ''', (direction, annee, code))
-    conn.commit()
-    conn.close()
 
-def enregistrer_utilisateur(username, password, role):
-    password_hashed = hashlib.sha256(password.encode()).hexdigest()
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('''INSERT INTO utilisateurs (username, password, role)
-                      VALUES (?, ?, ?)''', (username, password_hashed, role))
-    conn.commit()
-    conn.close()
-
-def verifier_utilisateur(username, password):
-    password_encoded = password.encode('utf-8')
-    password_hashed = hashlib.sha256(password_encoded).hexdigest()
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('''SELECT * FROM utilisateurs WHERE username=? AND password=?''', (username, password_hashed))
-    user = cursor.fetchone()
-    conn.close()
-    if user:
-        return {'id': user[0], 'username': user[1], 'role': user[3]}
-    return None
 
 def obtenir_region():
     conn = sqlite3.connect(DATABASE)
@@ -185,14 +151,7 @@ def obtenir_direction():
     direction = [row[0] for row in dat]
     return direction
 
-def obtenir_code():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('SELECT DISTINCT codes FROM agriculture_vivrieres ')
-    dat = cursor.fetchall()
-    conn.close()
-    codes = [row[0] for row in dat]
-    return codes
+
 
 def enregistrer_existence_partis(direction, region, partis_politique, annee_2015, annee_2016, annee_2017, annee_2018, annee_2019):
     conn = sqlite3.connect(DATABASE)
@@ -231,6 +190,15 @@ def obtenir_faits_civils():
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM faits_civils')
     data = cursor.fetchall()
-    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Département", "Sous-préfecture", "Faits Civil", "Type de Centre Civil", "Dans les délais (3 mois)", "Hors délai (4-12 mois)", "Hors délai (plus de 12 mois)", "Total Faits Naissance"])
+    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Département", "Sous-préfecture", "Faits Civil", "Type de Centre Civil", "Dans les délais (3 mois)",
+                                     "Hors délai (4-12 mois)", "Hors délai (plus de 12 mois)", "Total Faits Naissance"])
+    df = df.astype({
+        'Dans les délais (3 mois)': 'string',
+        'Hors délai (4-12 mois)':'string',
+        'Hors délai (plus de 12 mois)':'string',
+        'Total Faits Naissance':'string'
+        # Ajoutez des conversions pour d'autres colonnes si nécessaire
+    })
+
     conn.close()
     return df
