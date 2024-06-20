@@ -8,6 +8,26 @@ DATABASE = "comptes_regionaux.db"
 def creer_table_part2():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
+#Tableau 2.1.7: Evolution de la population de la région du PORO par département et par sexe sur les 5 dernières années
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS tab217_evolu_pop_reg_dep(
+            id INTEGER PRIMARY KEY,
+            direction TEXT,
+            region TEXT,
+            annee TEXT,
+            departement TEXT,
+            sous_prefecture TEXT,
+            hommes INTEGER,
+            femmes INTEGER,
+            total_sexe INTEGER,
+            densite REAL
+        )
+        '''
+    )
+
+
+
 
     # Tableau 2.1.3: Population du département par tranche d'âge selon la sous-préfecture et le sexe
     cursor.execute(
@@ -69,6 +89,29 @@ def creer_table_part2():
 creer_table_part2()
 
 # Les fonctions de la sections parties 2
+
+def enregistrer_tab217_evolu_pop_reg_dep(direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        INSERT INTO tab217_evolu_pop_reg_dep (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''',
+        (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite)
+    )
+    conn.commit()
+    conn.close()
+
+def obtenir_tab217_evolu_pop_reg_dep():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab217_evolu_pop_reg_dep')
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+
 
 def enregistrer_tab213_pop_dep_tranc_s_pref_sex(direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe):
     conn = sqlite3.connect(DATABASE)

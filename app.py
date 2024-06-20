@@ -66,9 +66,11 @@ elif page== "Annuaire statistique":
 
     st.markdown("<h2 style='color: blue;'>Partie II : Statistiques Démographiques      et Sociales    </h2>", unsafe_allow_html=True)
     # Charger le fichier Excel
-    st.write("Tableau 2.1.3: Population du département  par tranche d'âge selon la sous-préfecture et le sexe")
+
     # Charger le fichier Excel
-    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab213_pop_dep_tranc_s_pref_sex")
+
+    st.write("Tableau 2.1.7: Evolution de la population de la région ,par département et par sexe sur les  années")
+    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab217_evolu_pop_reg_dep")
 
     if uploaded_file is not None:
         # Lire le fichier Excel
@@ -78,16 +80,16 @@ elif page== "Annuaire statistique":
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "annee", "departement", "sous_prefecture", "tranche_age", "hommes",
-                            "femmes", "total_sexe"]
+        expected_columns = ["direction", "region", "annee", "departement", "sous_prefecture", "hommes", "femmes",
+                            "total_sexe", "densite"]
 
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
             if st.button("Enregistrer les données dans la base de données"):
                 for _, row in df.iterrows():
-                    data_p2.enregistrer_tab213_pop_dep_tranc_s_pref_sex(
+                    data_p2.enregistrer_tab217_evolu_pop_reg_dep(
                         row['direction'], row['region'], row['annee'], row['departement'],
-                        row['sous_prefecture'], row['tranche_age'], row['hommes'], row['femmes'], row['total_sexe']
+                        row['sous_prefecture'], row['hommes'], row['femmes'], row['total_sexe'], row['densite']
                     )
                 st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
@@ -96,11 +98,10 @@ elif page== "Annuaire statistique":
 
     # Afficher les données de la table
     if st.button('Afficher les données de la table'):
-        rows = data_p2.obtenir_tab213_pop_dep_tranc_s_pref_sex()
+        rows = data_p2.obtenir_tab217_evolu_pop_reg_dep()
         df_table = pd.DataFrame(rows, columns=[
-            'id', 'direction', 'region', 'annee', 'departement', 'sous_prefecture', 'tranche_age', 'hommes', 'femmes',
-            'total_sexe'
+            'id', 'direction', 'region', 'annee', 'departement', 'sous_prefecture', 'hommes', 'femmes', 'total_sexe',
+            'densite'
         ])
-        st.write('Données de la table tab213_pop_dep_tranc_s_pref_sex:')
+        st.write('Données de la table tab217_evolu_pop_reg_dep:')
         st.dataframe(df_table)
-
