@@ -57,6 +57,38 @@ def creer_table():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS tab211_pop_dep_sous_pref_sex(
+        id INTEGER PRIMARY KEY,
+        direction TEXT,
+        region TEXT,
+        annee TEXT,
+        departement TEXT,
+        sous_prefecture TEXT,
+       hommes INTEGER,
+        femmes INTEGER,
+        total_sexe INTEGER,
+        rapport_masculinite REAL
+
+
+
+        )
+
+        '''
+    )
+
+
+
+
+
+
+
+
+
+
+
+
     # Tableau 1.2.10: Superficie et nombre de village par sous-préfecture
     cursor.execute(
         '''
