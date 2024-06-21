@@ -66,7 +66,8 @@ elif page== "Annuaire statistique":
 
     st.markdown("<h2 style='color: blue;'>Partie II : Statistiques Démographiques      et Sociales    </h2>", unsafe_allow_html=True)
     # Charger le fichier Excel
-    partie_II.partie_II_annuaire()
+    if st.checkbox("Afficher les données",key="TAB2CH"):
+        partie_II.partie_II_annuaire()
 
     # Charger le fichier Excel
 
