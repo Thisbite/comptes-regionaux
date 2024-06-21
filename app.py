@@ -4,7 +4,7 @@ import data
 import pandas as pd
 
 import partie_I
-
+import partie_II
 
 # Titre de l'application
 st.set_page_config(page_title="comptes regionaux", page_icon="👗", layout="wide")
@@ -66,6 +66,7 @@ elif page== "Annuaire statistique":
 
     st.markdown("<h2 style='color: blue;'>Partie II : Statistiques Démographiques      et Sociales    </h2>", unsafe_allow_html=True)
     # Charger le fichier Excel
+    partie_II.partie_II_annuaire()
 
     # Charger le fichier Excel
 

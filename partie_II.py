@@ -72,7 +72,7 @@ def partie_II_annuaire():
                 "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
     # Afficher les données de la table
-    if st.button('Afficher les données de la table'):
+    if st.button('Afficher les données de la table',key="tb214"):
         rows = data_p2.obtenir_tab212_repa_pop_grou_age()
         df_table = pd.DataFrame(rows, columns=[
             'id', 'direction', 'region', 'annee', 'groupe_age', 'hommes', 'femmes', 'total_sexe', 'rapport_masculinite'
@@ -109,7 +109,7 @@ def partie_II_annuaire():
                 "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
     # Afficher les données de la table
-    if st.button('Afficher les données de la table'):
+    if st.button('Afficher les données de la table',key="tab214A"):
         rows = data_p2.obtenir_tab213_pop_dep_tranc_s_pref_sex()
         df_table = pd.DataFrame(rows, columns=[
             'id', 'direction', 'region', 'annee', 'departement', 'sous_prefecture', 'tranche_age', 'hommes', 'femmes',
@@ -146,7 +146,7 @@ def partie_II_annuaire():
                 "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
     # Afficher les données de la table
-    if st.button('Afficher les données de la table'):
+    if st.button('Afficher les données de la table',key="tab214AAB"):
         rows = data_p2.obtenir_tab217_evolu_pop_reg_dep()
         df_table = pd.DataFrame(rows, columns=[
             'id', 'direction', 'region', 'annee', 'departement', 'sous_prefecture', 'hommes', 'femmes', 'total_sexe',
