@@ -2,7 +2,7 @@ import streamlit as st
 import  data_p2
 import data
 import pandas as pd
-
+import demo_a_presenter as dm
 import partie_I
 import partie_II
 
@@ -19,7 +19,7 @@ if not st.session_state['logged_in']:
 else:
     if st.session_state['role'] == 'admin':
         page = st.sidebar.selectbox("Choisir une page",
-                                    ["Annuaire statistique","Nouveau utilisateur"])
+                                    ["Demo","Annuaire statistique","Nouveau utilisateur"])
 
 
 if page == "Connexion":
@@ -58,7 +58,6 @@ elif page == "Nouveau utilisateur" and st.session_state['logged_in']:
 
 
 elif page== "Annuaire statistique":
-
     st.markdown("<h2 style='color: blue;'>Partie I : Présentation Générale de la région</h2>", unsafe_allow_html=True)
     st.write(" Cette partie 1 de l'annuaire présente en général les données administrative des régions")
     if st.checkbox("Afficher les tableaux de données"):
@@ -70,4 +69,18 @@ elif page== "Annuaire statistique":
         partie_II.partie_II_annuaire()
 
     # Charger le fichier Excel
+
+
+
+
+
+
+
+
+elif page=="Demo":
+    dm.page_tab2112_faits_civils()
+    dm.page_statistique_faits_civils()
+
+
+
 

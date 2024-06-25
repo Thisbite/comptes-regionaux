@@ -2,13 +2,116 @@ import sqlite3
 import pandas as pd
 
 DATABASE = "comptes_regionaux.db"
+conn = sqlite3.connect(DATABASE)
+cursor = conn.cursor()
 
-
-
+cursor.execute('DROP TABLE tab2112_faits_civils')
 def creer_table_part2():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-#Tableau 2.1.7: Evolution de la population de la région du PORO par département et par sexe sur les 5 dernières années
+
+    #Tableau 2.1.12 : Faits d'état civil enregistrés et parvenus au niveau central selon le type de centre de la Région
+    #                       du Poro par Département et Sous-Préfecture en 2019
+
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS tab2112_faits_civils(
+        id INTEGER PRIMARY KEY ,
+        direction TEXT,
+        region TEXT,
+        departement TEXT,
+        sous_prefecture TEXT,
+        faits_civil TEXT,
+        type_etat_civil TEXT,
+        annee TEXT,
+        nombre_fait INTEGER
+    
+        )
+        '''
+    )
+
+
+
+
+
+
+
+
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS faits_civils(
+        id INTEGER PRIMARY KEY ,
+        direction TEXT,
+        region TEXT,
+        departement TEXT,
+        sous_prefecture TEXT,
+        faits_civil TEXT,
+        type_de_centre_civil TEXT,
+        dans_les_delais_3_mois INTEGER,
+        hors_delai_4_12_mois INTEGER,
+        hors_delai_plus_de_12_mois INTEGER,
+        total_faits_naissance INTEGER
+        )
+        '''
+    )
+    #Tableau 2.1.10 : Mariages enregistrés selon la nationalité et le type de centre d’état civil par Département de la Région du Poro  en 2019
+
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS tab2110_maria_centre_civil_dep(
+            id INTEGER PRIMARY KEY,
+            direction TEXT,
+            region TEXT,
+            departement TEXT, 
+            annee TEXT,
+            centre_etat_civil TEXT,
+           nat_coupl_ivoi INTEGER,
+            nat_coupl_mixte INTEGER,
+            nat_coupl_etrang INTEGER
+        )
+        '''
+    )
+
+
+
+
+
+
+
+
+
+#Tableau 2.1.9: Mariages enregistrés à l’état civil selon le régime matrimonial par Département de la
+
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS tab219_maria_regim(
+            id INTEGER PRIMARY KEY,
+            direction TEXT,
+            region TEXT,
+            departement TEXT, 
+            annee TEXT,
+           reg_mat_bien_com INTEGER,
+            reg_mat_bien_sep INTEGER
+        )
+        '''
+    )
+
+#Tableau 2.1.8: Mariages enregistrés à l’état civil selon la nationalité par Département en
+#Erreur de nommination de la table
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS tab219_maria_eta_civ_regim(
+            id INTEGER PRIMARY KEY,
+            direction TEXT,
+            region TEXT,
+            departement TEXT, 
+            annee TEXT,
+           nat_coupl_ivoi INTEGER,
+            nat_coupl_mixte INTEGER,
+            nat_coupl_etrang INTEGER
+        )
+        '''
+    )
+
+    #Tableau 2.1.7: Evolution de la population de la région du PORO par département et par sexe sur les 5 dernières années
     cursor.execute(
         '''
         CREATE TABLE IF NOT EXISTS tab217_evolu_pop_reg_dep(
@@ -90,6 +193,36 @@ creer_table_part2()
 
 # Les fonctions de la sections parties 2
 
+
+
+def enregistrer_faits_civils(direction, region, departement, sous_prefecture, faits_civil, type_de_centre_civil, dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO faits_civils(direction, region, departement, sous_prefecture, faits_civil, type_de_centre_civil, dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance)
+        VALUES(?,?,?,?,?,?,?,?,?,?)
+    ''', (direction, region, departement, sous_prefecture, faits_civil, type_de_centre_civil, dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance))
+    conn.commit()
+    conn.close()
+
+
+def obtenir_faits_civils():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM faits_civils')
+    data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Département", "Sous-préfecture", "Faits Civil", "Type de Centre Civil", "Dans les délais (3 mois)",
+                                     "Hors délai (4-12 mois)", "Hors délai (plus de 12 mois)", "Total Faits Naissance"])
+    df = df.astype({
+        'Dans les délais (3 mois)': 'string',
+        'Hors délai (4-12 mois)':'string',
+        'Hors délai (plus de 12 mois)':'string',
+        'Total Faits Naissance':'string'
+        # Ajoutez des conversions pour d'autres colonnes si nécessaire
+    })
+
+    conn.close()
+    return df
 def enregistrer_tab217_evolu_pop_reg_dep(direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -175,3 +308,88 @@ def obtenir_tab211_pop_dep_sous_pref_sex():
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+
+
+# Fonction d'enregistrement pour la table tab219_maria_eta_civ_regim
+def enregistrer_tab219_maria_eta_civ_regim(direction, region, annee, departement, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO tab219_maria_eta_civ_regim(direction, region, annee, departement, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
+        VALUES(?,?,?,?,?,?,?)
+    ''', (direction, region, annee, departement, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang))
+    conn.commit()
+    conn.close()
+
+# Fonction pour obtenir les données de la table tab219_maria_eta_civ_regim
+def obtenir_tab219_maria_eta_civ_regim():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab219_maria_eta_civ_regim')
+    data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Année", "Département", "Nat Coupl Ivoi", " Couple mixte de nationalité ", "Couple de nationalité etrangere"])
+    df = df.astype({
+        'Couple de nationalité ivoirienne': 'int',
+        'Couple mixte de nationalité':'int',
+        'Couple de nationalité etrangere':'int'
+        # Ajoutez des conversions pour d'autres colonnes si nécessaire
+    })
+
+    conn.close()
+    return df
+
+
+
+def enregistrer_tab219_maria_regim(direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO tab219_maria_regim(direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep)
+        VALUES(?,?,?,?,?,?)
+    ''', (direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep))
+    conn.commit()
+    conn.close()
+
+# Fonction pour obtenir les données de la table tab219_maria_regim
+def obtenir_tab219_maria_regim():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab219_maria_regim')
+    data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Département", "Année", "Reg Mat Bien Com", "Reg Mat Bien Sep"])
+    df = df.astype({
+        'Reg Mat Bien Com': 'int',
+        'Reg Mat Bien Sep': 'int'
+        # Ajoutez des conversions pour d'autres colonnes si nécessaire
+    })
+
+    conn.close()
+    return df
+
+
+def enregistrer_maria_centre_civil_dep(direction, region, departement, annee, centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO tab2110_maria_centre_civil_dep(direction, region, departement, annee, centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
+        VALUES(?,?,?,?,?,?,?,?)
+    ''', (direction, region, departement, annee, centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang))
+    conn.commit()
+    conn.close()
+
+def obtenir_maria_centre_civil_dep():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab2110_maria_centre_civil_dep')
+    data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Département", "Année", "Centre État Civil", "Couple ivoirien", "Couple mixte", "Couple étranger"])
+    df = df.astype({
+        'Couple ivoirien': 'int',
+        'Couple mixte': 'int',
+        'Couple étranger': 'int'
+        # Ajoutez des conversions pour d'autres colonnes si nécessaire
+    })
+
+    conn.close()
+    return df

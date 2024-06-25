@@ -3,7 +3,7 @@ import pandas as pd
 import  data
 
 def partie_I_annuaire():
-    st.write("Existence des partis  politiques par département de 2015-2019")
+    st.write("Tableau 1.2.1 Existence des partis  politiques par département ")
     # Section pour télécharger un fichier Excel
 
     uploaded_file = st.file_uploader("Importer les données Excel ", type=["xlsx"], key="existence_partis")
@@ -16,8 +16,7 @@ def partie_I_annuaire():
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "partis_politique", "Annee_2015", "Annee_2016", "Annee_2017",
-                            "Annee_2018", "Annee_2019"]
+        expected_columns = ["direction", "region", "partis_politique", "annee","statut_existence"]
 
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
@@ -25,42 +24,14 @@ def partie_I_annuaire():
                 for _, row in df.iterrows():
                     data.enregistrer_existence_partis(
                         row['direction'], row['region'], row['partis_politique'],
-                        row['Annee_2015'], row['Annee_2016'], row['Annee_2017'],
-                        row['Annee_2018'], row['Annee_2019']
+                        row['annee'],row["statut_existence"]
                     )
                 st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
             st.error(
                 "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    st.write(
-        "Naissances enregistrées et parvenus au niveau central selon le type de centre de la Région  par Département et par Sous-Préfecture en 2019")
-    uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"], key="faits_naissace")
 
-    if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
-
-        # Afficher les données du fichier
-        st.dataframe(df)
-
-        # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "departement", "sous_prefecture", "faits_civil",
-                            "type_de_centre_civil", "dans_les_delais_3_mois", "hors_delai_4_12_mois",
-                            "hors_delai_plus_de_12_mois", "total_faits_naissance"]
-
-        if all(column in df.columns for column in expected_columns):
-            # Bouton pour enregistrer les données dans la base de données
-            if st.button("Enregistrer les données dans la base de données"):
-                for _, row in df.iterrows():
-                    data.enregistrer_faits_civils(
-                        row['direction'], row['region'], row['departement'], row['sous_prefecture'],
-                        row['faits_civil'], row['type_de_centre_civil'], row['dans_les_delais_3_mois'],
-                        row['hors_delai_4_12_mois'], row['hors_delai_plus_de_12_mois'], row['total_faits_naissance']
-                    )
-                st.success("Données enregistrées avec succès!")
-        else:
-            st.error("Le fichier Excel ne contient pas les colonnes requises.")
 
     st.write("Nombre de responsables départementaux  des partis politiques selon le sexe  dans la région")
     uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"], key="tab_respo_politique")
