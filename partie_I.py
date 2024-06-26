@@ -3,6 +3,16 @@ import pandas as pd
 import  data
 
 def partie_I_annuaire():
+    page_tab121_existence_part_pol()
+
+    return
+
+
+
+
+
+
+def page_tab121_existence_part_pol():
     st.write("Tableau 1.2.1 Existence des partis  politiques par département ")
     # Section pour télécharger un fichier Excel
 
@@ -16,7 +26,7 @@ def partie_I_annuaire():
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "partis_politique", "annee","statut_existence"]
+        expected_columns = ["direction", "region", "partis_politique", "annee", "statut_existence"]
 
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
@@ -24,16 +34,17 @@ def partie_I_annuaire():
                 for _, row in df.iterrows():
                     data.enregistrer_existence_partis(
                         row['direction'], row['region'], row['partis_politique'],
-                        row['annee'],row["statut_existence"]
+                        row['annee'], row["statut_existence"]
                     )
                 st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
             st.error(
                 "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+    return
 
 
-
-    st.write("Nombre de responsables départementaux  des partis politiques selon le sexe  dans la région")
+def page_tab122_nbre_respo_depart():
+    st.write("Tableau 1.2.2: Nombre de responsables départementaux  des partis politiques selon le sexe  dans la région")
     uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"], key="tab_respo_politique")
 
     if uploaded_file is not None:
@@ -59,6 +70,9 @@ def partie_I_annuaire():
         else:
             st.error("Le fichier Excel ne contient pas les colonnes requises.")
 
+    return
+
+def page_tab123_effe_maire_elu_dep():
     st.write("Tableau 1.2.3: Effectif des maires élus  par département et par sexe en  exercices municipaux")
     uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"],
                                      key="tab_effec_maire_depart")
@@ -85,6 +99,10 @@ def partie_I_annuaire():
         else:
             st.error("Le fichier Excel ne contient pas les colonnes requises.")
 
+
+    return
+
+def page_tab124_repart_post_reg_fem():
     st.write(
         "Tableau 1.2.4: Répartition régionale des postes de responsabilités occupés par les femmes dans les mairies (maire, 1er adjoint au maire, 2ème adjoint au maire) aux exercices municipaux ")
     uploaded_file = st.file_uploader("Importer les données", type=["xlsx"],
@@ -116,8 +134,10 @@ def partie_I_annuaire():
         df_data = data.obtenir_tab_repa_post_mai_fem_dep()
         st.dataframe(df_data)
 
+    return
+def page_tab125_repart_maire_pol_sexe():
     st.write(
-        "Tableau 1.2.5: Répartition des maires par département, par sexe et par partie politique (on pourrait aussi voir l'évolution)")
+        "Tableau 1.2.5: Répartition des maires par département, par sexe et par partie politique ")
     uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"],
                                      key="tab_repa_mair_dep_pol")
 
@@ -149,6 +169,9 @@ def partie_I_annuaire():
         df_data = data.obtenir_tab_repa_mair_dep_pol()
         st.dataframe(df_data)
 
+    return
+
+def page_tab126_reaprt_adjoin_sexe():
     st.write("Tableau 1.2.6: Répartition des adjoints au maire par département, par sexe et par partie politique ")
     uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"],
                                      key="tab_repa_adj_mai_dep_p")
@@ -181,6 +204,14 @@ def partie_I_annuaire():
         df_data = data.obtenir_tab_repa_adj_mai_dep_p()
         st.dataframe(df_data)
 
+    return
+
+
+
+
+
+
+def page_tab217_effe_maire_recon():
     st.write("Tableau 1.2.7 : Effectif des maires reconduits et nouvellement élus par département")
     uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"],
                                      key="tab_mair_recon_nvl_dep")
@@ -212,6 +243,8 @@ def partie_I_annuaire():
         df_data = data.obtenir_tab_mair_recon_nvl_dep()
         st.dataframe(df_data)
 
+
+def page_tab128_repart_depute():
     st.write("Tableau 1.2.8: Répartition des députés par sexe et par partie politique")
     uploaded_file = st.file_uploader("Importer des données (format Excel)", type=["xlsx"])
 
@@ -243,6 +276,9 @@ def partie_I_annuaire():
         df_data = data.obtenir_tab_repa_deput_pol_sex_dep()
         st.dataframe(df_data)
 
+
+
+def page_tab129_list_sousp():
     st.write("Tableau 1.2.9: Liste des sous-préfectures par département")
     uploaded_file = st.file_uploader("Importer des données (format Excel)", type=["xlsx"], key="tab129")
 
@@ -274,6 +310,11 @@ def partie_I_annuaire():
         df_data = data.obtenir_tab_list_sous_pref_dep()
         st.dataframe(df_data)
 
+
+
+
+
+def page_tab1210_superficie_nbre_vlage():
     st.write("Tableau 1.2.10: Superficie et nombre de village par sous-préfecture")
     uploaded_file = st.file_uploader("Importer des données (format Excel)", type=["xlsx"], key="tab1210")
 
@@ -304,5 +345,3 @@ def partie_I_annuaire():
     if st.checkbox("Afficher les données enregistrées", key="tabl1210"):
         df_data = data.obtenir_tab_superf_nb_vil_dep()
         st.dataframe(df_data)
-
-    return

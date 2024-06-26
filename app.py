@@ -2,7 +2,7 @@ import streamlit as st
 import  data_p2
 import data
 import pandas as pd
-import demo_a_presenter as dm
+
 import partie_I
 import partie_II
 
@@ -19,7 +19,7 @@ if not st.session_state['logged_in']:
 else:
     if st.session_state['role'] == 'admin':
         page = st.sidebar.selectbox("Choisir une page",
-                                    ["Demo","Annuaire statistique","Nouveau utilisateur"])
+                                    ["Annuaire statistique","Nouveau utilisateur"])
 
 
 if page == "Connexion":
@@ -71,15 +71,6 @@ elif page== "Annuaire statistique":
     # Charger le fichier Excel
 
 
-
-
-
-
-
-
-elif page=="Demo":
-    dm.page_tab2112_faits_civils()
-    dm.page_statistique_faits_civils()
 
 
 

@@ -4,6 +4,15 @@ import pandas as pd
 
 
 def partie_II_annuaire():
+    page_tab211_pop_region_depart()
+    page_tab2112_fait_civil()
+
+    return
+
+
+
+def page_tab211_pop_region_depart():
+
     st.write("Tableau 2.1.1: Population de la région , par Département et par sous-préfecture")
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab211_pop_dep_sous_pref_sex")
 
@@ -42,6 +51,9 @@ def partie_II_annuaire():
         st.write('Données de Population de la région , par Département et par sous-préfecture')
         st.dataframe(df_table)
 
+
+
+def page_tab212_repart_pop_group_age():
     st.write("Tableau 2.1.2: Répartition  de la population de la région  du Poro par grand  groupe d’âge selon le sexe")
 
     # Charger le fichier Excel
@@ -71,15 +83,12 @@ def partie_II_annuaire():
             st.error(
                 "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    # Afficher les données de la table
-    if st.button('Afficher les données de la table',key="tb214"):
-        rows = data_p2.obtenir_tab212_repa_pop_grou_age()
-        df_table = pd.DataFrame(rows, columns=[
-            'id', 'direction', 'region', 'annee', 'groupe_age', 'hommes', 'femmes', 'total_sexe', 'rapport_masculinite'
-        ])
-        st.write('Données de la répartition  de la population de la région ,par grand  groupe d’âge selon le sexe')
-        st.dataframe(df_table)
 
+    return
+
+
+
+def page_tab_213_pop_depart_sous():
     st.write("Tableau 2.1.3: Population du département  par tranche d'âge selon la sous-préfecture et le sexe")
     # Charger le fichier Excel
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab213_pop_dep_tranc_s_pref_sex")
@@ -108,15 +117,11 @@ def partie_II_annuaire():
             st.error(
                 "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    # Afficher les données de la table
-    if st.button('Afficher les données de la table',key="tab214A"):
-        rows = data_p2.obtenir_tab213_pop_dep_tranc_s_pref_sex()
-        df_table = pd.DataFrame(rows, columns=[
-            'id', 'direction', 'region', 'annee', 'departement', 'sous_prefecture', 'tranche_age', 'hommes', 'femmes',
-            'total_sexe'
-        ])
-        st.write('Données de la table tab213_pop_dep_tranc_s_pref_sex:')
-        st.dataframe(df_table)
+    return
+
+
+def page_tab217_evolution_pop():
+
 
     st.write("Tableau 2.1.7: Evolution de la population de la région ,par département et par sexe sur les  années")
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab217_evolu_pop_reg_dep")
@@ -155,6 +160,153 @@ def partie_II_annuaire():
         st.write('Données de la table tab217_evolu_pop_reg_dep:')
         st.dataframe(df_table)
 
+    return
+
+
+
+
+def page_tab218_mariage_commun_bien():
+    st.write("Tableau 2.1.8: Mariage selon l'état civil et le régime des biens par région")
+
+    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab219_maria_eta_civ_regim")
+
+    if uploaded_file is not None:
+        # Lire le fichier Excel
+        df = pd.read_excel(uploaded_file)
+
+        # Afficher les données du fichier
+        st.dataframe(df)
+
+        # Vérifier les colonnes du fichier
+        expected_columns = ["direction", "region", "annee", "departement", "nat_coupl_ivoi", "nat_coupl_mixte",
+                            "nat_coupl_etrang"]
+
+        if all(column in df.columns for column in expected_columns):
+            # Bouton pour enregistrer les données dans la base de données
+            if st.button("Enregistrer les données dans la base de données", key="tab219FF"):
+                for _, row in df.iterrows():
+                    data_p2.enregistrer_tab219_maria_eta_civ_regim(
+                        row['direction'], row['region'], row['annee'], row['departement'],
+                        row['nat_coupl_ivoi'], row['nat_coupl_mixte'], row['nat_coupl_etrang']
+                    )
+                st.success("Les données du fichier ont été enregistrées avec succès!")
+        else:
+            st.error(
+                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+
+    return
+
+
+
+
+def page_tab219_mariage_matrimon():
+    st.write("Tableau 2.1.9: Mariage selon le régime matrimonial par région")
+
+    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab219_maria_regim")
+
+    if uploaded_file is not None:
+        # Lire le fichier Excel
+        df = pd.read_excel(uploaded_file)
+
+        # Afficher les données du fichier
+        st.dataframe(df)
+
+        # Vérifier les colonnes du fichier
+        expected_columns = ["direction", "region", "departement", "annee", "reg_mat_bien_com", "reg_mat_bien_sep"]
+
+        if all(column in df.columns for column in expected_columns):
+            # Bouton pour enregistrer les données dans la base de données
+            if st.button("Enregistrer les données dans la base de données"):
+                for _, row in df.iterrows():
+                    data_p2.enregistrer_tab219_maria_regim(
+                        row['direction'], row['region'], row['departement'], row['annee'],
+                        row['reg_mat_bien_com'], row['reg_mat_bien_sep']
+                    )
+                st.success("Les données du fichier ont été enregistrées avec succès!")
+        else:
+            st.error(
+                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+
+    return
+
+
+
+
+def page_tab2110_mariage_civil():
+    st.write("Tableau 2.1.10: Mariages par centre civil et département")
+
+    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab2110_maria_centre_civil_dep")
+
+    if uploaded_file is not None:
+        # Lire le fichier Excel
+        df = pd.read_excel(uploaded_file)
+
+        # Afficher les données du fichier
+        st.dataframe(df)
+
+        # Vérifier les colonnes du fichier
+        expected_columns = ["direction", "region", "departement", "annee", "centre_etat_civil", "nat_coupl_ivoi",
+                            "nat_coupl_mixte", "nat_coupl_etrang"]
+
+        if all(column in df.columns for column in expected_columns):
+            # Bouton pour enregistrer les données dans la base de données
+            if st.button("Enregistrer les données dans la base de données"):
+                for _, row in df.iterrows():
+                    data_p2.enregistrer_maria_centre_civil_dep(
+                        row['direction'], row['region'], row['departement'], row['annee'],
+                        row['centre_etat_civil'], row['nat_coupl_ivoi'], row['nat_coupl_mixte'], row['nat_coupl_etrang']
+                    )
+                st.success("Les données du fichier ont été enregistrées avec succès!")
+        else:
+            st.error(
+                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+    return
+
+
+
+
+
+def page_tab2112_fait_civil():
+    st.write(
+        "Tableau 2.1.12 : Faits d'état civil enregistrés et parvenus au niveau central selon le type de centre de la Région")
+
+    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab2112_faits_civils")
+
+    if uploaded_file is not None:
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
+
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+
+        # Afficher les données du fichier
+        st.dataframe(df)
+
+        # Vérifier les colonnes du fichier
+        expected_columns = ["direction", "region", "departement", "sous_prefecture", "faits_civil", "type_etat_civil",
+                            "annee", "nombre_fait"]
+
+        if all(column in df.columns for column in expected_columns):
+            # Bouton pour enregistrer les données dans la base de données
+            if st.button("Enregistrer les données dans la base de données"):
+                for _, row in df.iterrows():
+                    data_p2.enregistrement_tab2112_fait(
+                        row['direction'], row['region'], row['departement'], row['sous_prefecture'], row['faits_civil'],
+                        row['type_etat_civil'], row['annee'], row['nombre_fait']
+                    )
+                st.success("Les données du fichier ont été enregistrées avec succès!")
+        else:
+            st.error(
+                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+
+    return
+
+
+def page_tab2113_naiss_enreg_reg_dep():
     st.write(
         "Naissances enregistrées et parvenus au niveau central selon le type de centre de la Région  par Département et par Sous-Préfecture en 2019")
     uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"], key="faits_naissace")
@@ -184,89 +336,4 @@ def partie_II_annuaire():
         else:
             st.error("Le fichier Excel ne contient pas les colonnes requises.")
 
-    st.write("Tableau 2.1.8: Mariage selon l'état civil et le régime des biens par région")
-
-    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab219_maria_eta_civ_regim")
-
-    if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
-
-        # Afficher les données du fichier
-        st.dataframe(df)
-
-        # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "annee", "departement", "nat_coupl_ivoi", "nat_coupl_mixte",
-                            "nat_coupl_etrang"]
-
-        if all(column in df.columns for column in expected_columns):
-            # Bouton pour enregistrer les données dans la base de données
-            if st.button("Enregistrer les données dans la base de données",key="tab219FF"):
-                for _, row in df.iterrows():
-                    data_p2.enregistrer_tab219_maria_eta_civ_regim(
-                        row['direction'], row['region'], row['annee'], row['departement'],
-                        row['nat_coupl_ivoi'], row['nat_coupl_mixte'], row['nat_coupl_etrang']
-                    )
-                st.success("Les données du fichier ont été enregistrées avec succès!")
-        else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
-
-    st.write("Tableau 2.1.9: Mariage selon le régime matrimonial par région")
-
-    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab219_maria_regim")
-
-    if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
-
-        # Afficher les données du fichier
-        st.dataframe(df)
-
-        # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "departement", "annee", "reg_mat_bien_com", "reg_mat_bien_sep"]
-
-        if all(column in df.columns for column in expected_columns):
-            # Bouton pour enregistrer les données dans la base de données
-            if st.button("Enregistrer les données dans la base de données"):
-                for _, row in df.iterrows():
-                    data_p2.enregistrer_tab219_maria_regim(
-                        row['direction'], row['region'], row['departement'], row['annee'],
-                        row['reg_mat_bien_com'], row['reg_mat_bien_sep']
-                    )
-                st.success("Les données du fichier ont été enregistrées avec succès!")
-        else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
-
-    st.write("Tableau 2.1.10: Mariages par centre civil et département")
-
-    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab2110_maria_centre_civil_dep")
-
-    if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
-
-        # Afficher les données du fichier
-        st.dataframe(df)
-
-        # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "departement", "annee", "centre_etat_civil", "nat_coupl_ivoi",
-                            "nat_coupl_mixte", "nat_coupl_etrang"]
-
-        if all(column in df.columns for column in expected_columns):
-            # Bouton pour enregistrer les données dans la base de données
-            if st.button("Enregistrer les données dans la base de données"):
-                for _, row in df.iterrows():
-                    data_p2.enregistrer_maria_centre_civil_dep(
-                        row['direction'], row['region'], row['departement'], row['annee'],
-                        row['centre_etat_civil'], row['nat_coupl_ivoi'], row['nat_coupl_mixte'], row['nat_coupl_etrang']
-                    )
-                st.success("Les données du fichier ont été enregistrées avec succès!")
-        else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
-
     return
-
-
