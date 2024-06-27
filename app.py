@@ -17,7 +17,7 @@ if 'logged_in' not in st.session_state:
 if not st.session_state['logged_in']:
     page = st.sidebar.selectbox("Choisir une page", ["Connexion"])
 else:
-    if st.session_state['role'] == 'admin':
+    if st.session_state['role'] == 'superviseur':
         page = st.sidebar.selectbox("Choisir une page",
                                     ["Annuaire statistique","Nouveau utilisateur"])
 
@@ -46,7 +46,7 @@ elif page == "Nouveau utilisateur" and st.session_state['logged_in']:
     with st.form("enregistrement_utilisateur"):
         username = st.text_input("Nom d'utilisateur")
         password = st.text_input("Mot de passe", type="password")
-        role = st.selectbox("Rôle", ["admin", "agent"])
+        role = st.selectbox("Rôle", ["superviseur", "agent"])
         submitted = st.form_submit_button("Enregistrer")
 
         if submitted:
@@ -69,6 +69,8 @@ elif page== "Annuaire statistique":
         partie_II.partie_II_annuaire()
 
     # Charger le fichier Excel
+
+
 
 
 

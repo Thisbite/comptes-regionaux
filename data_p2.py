@@ -1,7 +1,7 @@
 import sqlite3
 import pandas as pd
 
-DATABASE = "comptes_regionaux.db"
+DATABASE = "db_annuaire_stat.db"
 conn = sqlite3.connect(DATABASE)
 cursor = conn.cursor()
 

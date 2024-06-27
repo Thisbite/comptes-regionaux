@@ -2,14 +2,14 @@ import sqlite3
 import pandas as pd
 import hashlib
 
-DATABASE = "comptes_regionaux.db"
+DATABASE = "db_annuaire_stat.db"
 
 
 def enregistrer_utilisateur(username, password, role):
     password_hashed = hashlib.sha256(password.encode()).hexdigest()
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('''INSERT INTO utilisateurs (username, password, role)
+    cursor.execute('''INSERT OR IGNORE INTO utilisateurs (username, password, role)
                       VALUES (?, ?, ?)''', (username, password_hashed, role))
     conn.commit()
     conn.close()
