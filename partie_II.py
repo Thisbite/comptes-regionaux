@@ -4,8 +4,8 @@ import pandas as pd
 
 
 def partie_II_annuaire():
-    page_tab211_pop_region_depart()
-    page_tab2112_fait_civil()
+    page_tab219_mariage_matrimon()
+
 
     return
 
@@ -17,10 +17,16 @@ def page_tab211_pop_region_depart():
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab211_pop_dep_sous_pref_sex")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -60,8 +66,16 @@ def page_tab212_repart_pop_group_age():
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab212_repa_pop_grou_age")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
+
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+
 
         # Afficher les données du fichier
         st.dataframe(df)
@@ -94,8 +108,16 @@ def page_tab_213_pop_depart_sous():
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab213_pop_dep_tranc_s_pref_sex")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
+
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
 
         # Afficher les données du fichier
         st.dataframe(df)
@@ -127,8 +149,16 @@ def page_tab217_evolution_pop():
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab217_evolu_pop_reg_dep")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
+
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+
 
         # Afficher les données du fichier
         st.dataframe(df)
@@ -171,8 +201,15 @@ def page_tab218_mariage_commun_bien():
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab219_maria_eta_civ_regim")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
+
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
 
         # Afficher les données du fichier
         st.dataframe(df)
@@ -205,8 +242,16 @@ def page_tab219_mariage_matrimon():
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab219_maria_regim")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
+
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
 
         # Afficher les données du fichier
         st.dataframe(df)
@@ -238,8 +283,15 @@ def page_tab2110_mariage_civil():
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab2110_maria_centre_civil_dep")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
+
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
 
         # Afficher les données du fichier
         st.dataframe(df)
@@ -312,10 +364,15 @@ def page_tab2113_naiss_enreg_reg_dep():
     uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"], key="faits_naissace")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier

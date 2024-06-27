@@ -19,10 +19,15 @@ def page_tab121_existence_part_pol():
     uploaded_file = st.file_uploader("Importer les données Excel ", type=["xlsx"], key="existence_partis")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -48,10 +53,15 @@ def page_tab122_nbre_respo_depart():
     uploaded_file = st.file_uploader("Importer les données ", type=["xlsx"], key="tab_respo_politique")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -78,10 +88,15 @@ def page_tab123_effe_maire_elu_dep():
                                      key="tab_effec_maire_depart")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -108,10 +123,15 @@ def page_tab124_repart_post_reg_fem():
     uploaded_file = st.file_uploader("Importer les données", type=["xlsx"],
                                      key="tab_repa_post_mai_fem_dep")
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -143,9 +163,15 @@ def page_tab125_repart_maire_pol_sexe():
 
     if uploaded_file is not None:
         # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -177,10 +203,15 @@ def page_tab126_reaprt_adjoin_sexe():
                                      key="tab_repa_adj_mai_dep_p")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -217,10 +248,15 @@ def page_tab217_effe_maire_recon():
                                      key="tab_mair_recon_nvl_dep")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -249,10 +285,15 @@ def page_tab128_repart_depute():
     uploaded_file = st.file_uploader("Importer des données (format Excel)", type=["xlsx"])
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -283,10 +324,15 @@ def page_tab129_list_sousp():
     uploaded_file = st.file_uploader("Importer des données (format Excel)", type=["xlsx"], key="tab129")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -319,10 +365,15 @@ def page_tab1210_superficie_nbre_vlage():
     uploaded_file = st.file_uploader("Importer des données (format Excel)", type=["xlsx"], key="tab1210")
 
     if uploaded_file is not None:
-        # Lire le fichier Excel
-        df = pd.read_excel(uploaded_file)
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
 
-        # Afficher les données du fichier
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
