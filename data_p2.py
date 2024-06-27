@@ -7,10 +7,71 @@ cursor = conn.cursor()
 
 
 
-
 def creer_table_part2():
-    # Tableau 2.1.12 : Faits d'état civil enregistrés et parvenus au niveau central selon le type de centre de la Région
-    #                       du Poro par Département et Sous-Préfecture en 2019
+
+
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS tab2115_fait_naiss_deces(
+        id INTEGER PRIMARY KEY ,
+        direction TEXT,
+        region TEXT,
+        departement TEXT,
+        sous_prefecture TEXT,
+        annee TEXT,
+        nbre_naiss_centr_princ INTEGER,
+        nbre_naiss_centr_second INTEGER,
+        nbre_total_naiss INTEGER,
+       nbre_deces_centr_princ INTEGER,
+        nbre_deces_centr_second INTEGER,
+        nbre_total_deces INTEGER
+        )
+        '''
+    )
+
+
+
+
+
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS tab2114_fait_civi_deces(
+        id INTEGER PRIMARY KEY ,
+        direction TEXT,
+        region TEXT,
+        departement TEXT,
+        sous_prefecture TEXT,
+        annee TEXT,
+        faits_civil TEXT,
+        type_de_centre_civil TEXT,
+        dans_les_delais_15_jour INTEGER,
+        hors_delai_annee_cours INTEGER,
+        hors_delai_des_annees_anteri INTEGER,
+        total_faits_deces INTEGER
+        )
+        '''
+    )
+
+
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS tab2113_fait_civi_naiss(
+        id INTEGER PRIMARY KEY ,
+        direction TEXT,
+        region TEXT,
+        departement TEXT,
+        sous_prefecture TEXT,
+        annee TEXT,
+        faits_civil TEXT,
+        type_de_centre_civil TEXT,
+        dans_les_delais_3_mois INTEGER,
+        hors_delai_4_12_mois INTEGER,
+        hors_delai_plus_de_12_mois INTEGER,
+        total_faits_naissance INTEGER
+        )
+        '''
+    )
+
 
     cursor.execute(
         '''
@@ -28,24 +89,25 @@ def creer_table_part2():
         )
         '''
     )
-
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS faits_civils(
+        CREATE TABLE IF NOT EXISTS tab2111_fait_matr_civils(
         id INTEGER PRIMARY KEY ,
         direction TEXT,
         region TEXT,
         departement TEXT,
-        sous_prefecture TEXT,
-        faits_civil TEXT,
-        type_de_centre_civil TEXT,
-        dans_les_delais_3_mois INTEGER,
-        hors_delai_4_12_mois INTEGER,
-        hors_delai_plus_de_12_mois INTEGER,
-        total_faits_naissance INTEGER
+         annee TEXT,
+        type_centre_civil TEXT,
+        nbre_bien_commun INTEGER,
+        nbre_bien_separe INTEGER
+       
+       
+
         )
         '''
     )
+
+
     # Tableau 2.1.10 : Mariages enregistrés selon la nationalité et le type de centre d’état civil par Département de la Région du Poro  en 2019
 
     cursor.execute(
@@ -179,26 +241,26 @@ creer_table_part2()
 # Les fonctions de la sections parties 2
 
 
-def enregistrer_faits_civils(direction, region, departement, sous_prefecture, faits_civil, type_de_centre_civil,
+def enregistrer_tab2113_fait_civi_naiss(direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil,
                              dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois,
                              total_faits_naissance):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     cursor.execute('''
-        INSERT INTO faits_civils(direction, region, departement, sous_prefecture, faits_civil, type_de_centre_civil, dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance)
-        VALUES(?,?,?,?,?,?,?,?,?,?)
-    ''', (direction, region, departement, sous_prefecture, faits_civil, type_de_centre_civil, dans_les_delais_3_mois,
+        INSERT INTO tab2113_fait_civi_naiss(direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil, dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?)
+    ''', (direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil, dans_les_delais_3_mois,
           hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance))
     conn.commit()
     conn.close()
 
 
-def obtenir_faits_civils():
+def obtenir_tab2113_fait_civi_naiss():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM faits_civils')
+    cursor.execute('SELECT * FROM tab2113_fait_civi_naiss')
     data = cursor.fetchall()
-    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Département", "Sous-préfecture", "Faits Civil",
+    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Département", "Sous-préfecture", "Année","Faits Civil",
                                      "Type de Centre Civil", "Dans les délais (3 mois)",
                                      "Hors délai (4-12 mois)", "Hors délai (plus de 12 mois)", "Total Faits Naissance"])
     df = df.astype({
@@ -417,3 +479,77 @@ def obtenir_tab2112_fait():
     data = cursor.fetchall()
     df_data = pd.DataFrame(data, columns=['ID', 'Direction', 'Region', 'Departement', 'Sous-prefecture', 'Faits Civil', 'Type Etat Civil', 'Annee', 'Nombre Fait'])
     return df_data
+
+
+
+
+
+
+def enregistrer_tab2111_fait_matr_civils(direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        INSERT INTO tab2111_fait_matr_civils (direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''',
+        (direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe)
+    )
+    conn.commit()
+    conn.close()
+
+def obtenir_tab2111_fait_matr_civils():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab2111_fait_matr_civils')
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+
+
+def enregistrer_tab2114_fait_civi_deces(direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        INSERT INTO tab2114_fait_civi_deces (direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+        ''',
+        (direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces)
+    )
+    conn.commit()
+    conn.close()
+
+def obtenir_tab2114_fait_civi_deces():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab2114_fait_civi_deces')
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+
+def enregistrer_tab2115_fait_naiss_deces(direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        INSERT INTO tab2115_fait_naiss_deces (direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''',
+        (direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces)
+    )
+    conn.commit()
+    conn.close()
+
+def obtenir_tab2115_fait_naiss_deces():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab2115_fait_naiss_deces')
+    data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Département","Sous-préfecture", "Année", "Naissance enregistrées dans Centre principal",
+                                     "Naissance enregistrées dans Centre secondaire","Naissance totale  enregistrée","Décès enregistrés dans Centre principal",
+                                     "Décès enregistrés dans Centre secondaire","Décès total  enregistré"])
+    conn.close()
+    return df

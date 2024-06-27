@@ -60,12 +60,12 @@ elif page == "Nouveau utilisateur" and st.session_state['logged_in']:
 elif page== "Annuaire statistique":
     st.markdown("<h2 style='color: blue;'>Partie I : Présentation Générale de la région</h2>", unsafe_allow_html=True)
     st.write(" Cette partie 1 de l'annuaire présente en général les données administrative des régions")
-    if st.checkbox("Afficher les tableaux de données"):
+    if st.checkbox("Afficher les tableaux de premiere partie"):
         partie_I.partie_I_annuaire()
 
     st.markdown("<h2 style='color: blue;'>Partie II : Statistiques Démographiques      et Sociales    </h2>", unsafe_allow_html=True)
-    # Charger le fichier Excel
-    if st.checkbox("Afficher les données",key="TAB2CH"):
+
+    if st.checkbox("Afficher les tableaux de la deuxieme partie",key="TAB2CH"):
         partie_II.partie_II_annuaire()
 
     # Charger le fichier Excel
