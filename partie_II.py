@@ -8,7 +8,7 @@ def partie_II_annuaire():
     page_tab212_repart_pop_group_age()
     page_tab_213_pop_depart_sous()
     page_tab217_evolution_pop()
-    page_tab218_mariage_commun_bien()
+
     page_tab219_mariage_matrimon()
     page_tab2110_mariage_civil()
     page_tab2111_fait_matr_civils()
@@ -59,12 +59,9 @@ def page_tab211_pop_region_depart():
     # Afficher les données de la table
     if st.button('Afficher les données de la table'):
         rows = data_p2.obtenir_tab211_pop_dep_sous_pref_sex()
-        df_table = pd.DataFrame(rows, columns=[
-            'ID', 'Direction régionale', 'Région', 'Année', 'Département', 'Sous-préfecture', 'Nombre hommes', ' Nombre de femmes', 'Total sexe',
-            'rapport_masculinite'
-        ])
+
         st.write('Données de Population de la région , par Département et par sous-préfecture')
-        st.dataframe(df_table)
+        st.dataframe(rows)
 
 
 
@@ -108,12 +105,9 @@ def page_tab212_repart_pop_group_age():
 
     if st.button('Afficher les données de la table',key="tab212AA"):
         rows = data_p2.obtenir_tab212_repa_pop_grou_age()
-        df_table = pd.DataFrame(rows, columns=[
-            "ID", "Direction régionale", "Région", "Année", "Tranche d'âge","Nombre d'hommes"," Nombre de femmes","Total sexe",
-            "Rapport masculinité"
-        ])
+
         st.write('Données de Population de la région , par Département et par sous-préfecture')
-        st.dataframe(df_table)
+        st.dataframe(rows)
 
 
     return
@@ -160,12 +154,9 @@ def page_tab_213_pop_depart_sous():
 
     if st.button('Afficher les données de la table',key="tab213_pop"):
         rows = data_p2.obtenir_tab211_pop_dep_sous_pref_sex()
-        df_table = pd.DataFrame(rows, columns=[
-            "ID", "Direction régionale", "Région", "Année", "Tranche d'âge","Nombre d'hommes"," Nombre de femmes","Total sexe"
 
-        ])
         st.write('Données de Population de la région , par Département et par sous-préfecture')
-        st.dataframe(df_table)
+        st.dataframe(rows)
 
     return
 
@@ -215,22 +206,17 @@ def page_tab217_evolution_pop():
     # Afficher les données de la table
     if st.button('Afficher les données de la table',key="tab214AABT"):
         rows = data_p2.obtenir_tab217_evolu_pop_reg_dep()
-        df_table = pd.DataFrame(rows, columns=[
-            'ID', 'Direction', 'Région', 'Année', 'Département', 'Sous-prefecture', 'Hommes', 'Femmes', 'Total sexe',
-            'Densité'
-        ])
+
         st.write('Données de la table ')
-        st.dataframe(df_table)
+        st.dataframe(rows)
 
     return
 
 
+def page_tab218_maria_eta_civ_regim():
+    st.write("Tableau 2.1.8 : Mariage par état civil et régime par région")
 
-
-def page_tab218_mariage_commun_bien():
-    st.write("Tableau 2.1.8: Mariages enregistrés à l’état civil selon la nationalité par Département ")
-
-    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab219_maria_eta_civ_regim")
+    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab218_maria_eta_civ_regim")
 
     if uploaded_file is not None:
         # Lire le fichier Excel et obtenir les noms des feuilles
@@ -242,38 +228,34 @@ def page_tab218_mariage_commun_bien():
 
         # Lire la feuille choisie
         df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
-
-        # Afficher les données du fichier
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "annee", "departement", "nat_coupl_ivoi", "nat_coupl_mixte",
-                            "nat_coupl_etrang"]
+        expected_columns = ["direction", "region", "departement", "annee", "nat_coupl_ivoi", "nat_coupl_mixte", "nat_coupl_etrang"]
 
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
-            if st.button("Enregistrer les données dans la base de données", key="tab219FF"):
+            if st.button("Enregistrer les données dans la base de données"):
                 for _, row in df.iterrows():
-                    data_p2.enregistrer_tab219_maria_eta_civ_regim(
-                        row['direction'], row['region'], row['annee'], row['departement'],
+                    data_p2.enregistrer_tab218_maria_eta_civ_regim(
+                        row['direction'], row['region'], row['departement'], row['annee'],
                         row['nat_coupl_ivoi'], row['nat_coupl_mixte'], row['nat_coupl_etrang']
                     )
                 st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    if st.button('Afficher les données de la table', key="tab214AABC"):
-        rows = data_p2.obtenir_maria_centre_civil_dep()
-        df_table = pd.DataFrame(rows, columns=[
-                    'ID', 'Direction', 'Région', 'Année', 'Département', 'Nombre de couple Nat ivoirienne',
-            'Nombre de Couple de Nat mixte','Nombre de couple Nat étrangère'
-                ])
-        st.write('Données de la table ')
-        st.dataframe(df_table)
+    if st.button('Afficher les données de la table', key="tab218AAB"):
+        rows = data_p2.obtenir_tab218_maria_eta_civ_regim()
 
+        st.write('Données de la table tab218_maria_eta_civ_regim:')
+        st.dataframe(rows)
 
     return
+
+
+
+
 
 
 
@@ -316,11 +298,9 @@ def page_tab219_mariage_matrimon():
 
     if st.button('Afficher les données de la table', key="tab214AABG"):
         rows =data_p2.obtenir_tab219_maria_regim()
-        df_table = pd.DataFrame(rows, columns=[
-                    'ID', 'Direction', 'Région', 'Année', 'Département','Régime matrimoniale bien commun','Régime matrimoniale bien séparé'
-                ])
+
         st.write('Données de la table ')
-        st.dataframe(df_table)
+        st.dataframe(rows)
 
     return
 
@@ -354,7 +334,7 @@ def page_tab2110_mariage_civil():
             # Bouton pour enregistrer les données dans la base de données
             if st.button("Enregistrer les données dans la base de données"):
                 for _, row in df.iterrows():
-                    data_p2.enregistrer_maria_centre_civil_dep(
+                    data_p2.enregistrer_tab2110_maria_centre_civil_dep(
                         row['direction'], row['region'], row['departement'], row['annee'],
                         row['centre_etat_civil'], row['nat_coupl_ivoi'], row['nat_coupl_mixte'], row['nat_coupl_etrang']
                     )
@@ -365,13 +345,10 @@ def page_tab2110_mariage_civil():
 
     # Afficher les données de la table
     if st.button('Afficher les données de la table', key="tab2110AAB"):
-        rows = data_p2.obtenir_maria_centre_civil_dep()
-        df_table = pd.DataFrame(rows, columns=[
-            'ID', 'Direction', 'Région', 'Département', 'Année', 'Centre état civil', 'Couple ivoirien',
-            'Couple mixte', 'Couple étranger'
-        ])
+        rows = data_p2.obtenir_tab2110_maria_centre_civil_dep()
+
         st.write('Données de la table tab2110_maria_centre_civil_dep:')
-        st.dataframe(df_table)
+        st.dataframe(rows)
 
     return
 
@@ -379,103 +356,8 @@ def page_tab2110_mariage_civil():
 
 
 
-def page_tab2112_fait_civil():
-    st.write(
-        "Tableau 2.1.12 : Faits d'état civil enregistrés et parvenus au niveau central selon le type de centre de la Région")
-
-    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab2112_faits_civils")
-
-    if uploaded_file is not None:
-        # Lire le fichier Excel et obtenir les noms des feuilles
-        excel_file = pd.ExcelFile(uploaded_file)
-        sheet_names = excel_file.sheet_names
-
-        # Sélecteur pour choisir la feuille
-        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
-
-        # Lire la feuille choisie
-        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
-
-        # Afficher les données du fichier
-        st.dataframe(df)
-
-        # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "departement", "sous_prefecture", "faits_civil", "type_etat_civil",
-                            "annee", "nombre_fait"]
-
-        if all(column in df.columns for column in expected_columns):
-            # Bouton pour enregistrer les données dans la base de données
-            if st.button("Enregistrer les données dans la base de données"):
-                for _, row in df.iterrows():
-                    data_p2.enregistrement_tab2112_fait(
-                        row['direction'], row['region'], row['departement'], row['sous_prefecture'], row['faits_civil'],
-                        row['type_etat_civil'], row['annee'], row['nombre_fait']
-                    )
-                st.success("Les données du fichier ont été enregistrées avec succès!")
-        else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
-
-    # Afficher les données de la table
-    if st.button('Afficher les données de la table', key="tab2112AAB"):
-        rows = data_p2.obtenir_tab2112_fait()
-        df_table = pd.DataFrame(rows, columns=[
-            'ID', 'Direction', 'Région', 'Département', 'Sous-préfecture', 'Fait civil', 'Type état civil',
-            'Année', 'Nombre de faits'
-        ])
-        st.write('Données de la table tab2112_faits_civils:')
-        st.dataframe(df_table)
-
-    return
 
 
-def page_tab2113_naiss_enreg_reg_dep():
-    st.write("Tableau 2.1.13 : Naissances enregistrées et parvenues au niveau central selon le type de centre de la Région")
-
-    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab2113_naissances")
-
-    if uploaded_file is not None:
-        # Lire le fichier Excel et obtenir les noms des feuilles
-        excel_file = pd.ExcelFile(uploaded_file)
-        sheet_names = excel_file.sheet_names
-
-        # Sélecteur pour choisir la feuille
-        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
-
-        # Lire la feuille choisie
-        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
-        st.dataframe(df)
-
-        # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "departement", "sous_prefecture", "annee", "faits_civil",
-                            "type_de_centre_civil", "dans_les_delais_3_mois", "hors_delai_4_12_mois",
-                            "hors_delai_plus_de_12_mois", "total_faits_naissance"]
-
-        if all(column in df.columns for column in expected_columns):
-            # Bouton pour enregistrer les données dans la base de données
-            if st.button("Enregistrer les données dans la base de données"):
-                for _, row in df.iterrows():
-                    data_p2.enregistrer_tab2113_fait_civi_naiss(
-                        row['direction'], row['region'], row['departement'], row['sous_prefecture'], row['annee'],
-                        row['faits_civil'], row['type_de_centre_civil'], row['dans_les_delais_3_mois'],
-                        row['hors_delai_4_12_mois'], row['hors_delai_plus_de_12_mois'], row['total_faits_naissance']
-                    )
-                st.success("Les données du fichier ont été enregistrées avec succès!")
-        else:
-            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
-
-    # Afficher les données de la table
-    if st.button('Afficher les données de la table', key="tab2113AAB"):
-        rows = data_p2.obtenir_tab2113_fait_civi_naiss()
-        df_table = pd.DataFrame(rows, columns=[
-            'ID', 'Direction', 'Région', 'Département', 'Sous-préfecture', 'Année', 'Fait civil',
-            'Type de centre civil', 'Dans les délais (0-3 mois)', 'Hors délai (4-12 mois)',
-            'Hors délai (>12 mois)', 'Total faits naissance'
-        ])
-        st.write('Données de la table tab2113_naissances:')
-        st.dataframe(df_table)
-
-    return
 
 
 
@@ -513,26 +395,180 @@ def page_tab2111_fait_matr_civils():
         else:
             st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
+    df = data_p2.obtenir_tab2111_fait_matr_civils()
+    if st.checkbox("Obtenir des données", key="tab2111obtenir"):
+        # Ajout des sélecteurs pour l'année, la région, le département et la sous-préfecture
+        annees = df['Année'].unique()
+        regions = df['Region'].unique()
+        departements = df['Departement'].unique()
+
+
+        selected_annee = st.selectbox("Choisir l'année", annees, key="tab2111anne")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab2111regio")
+        selected_dep = st.selectbox("Choisir le département", departements, key="tab2111depar")
+
+
+        # Filtrer les données en fonction des sélections
+        filtered_df = df[
+            ((df['Année'] == selected_annee) & (df['Region'] == selected_region) & (
+                        df['Departement'] == selected_dep) ) |
+            ((df['Année'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'].isna()))
+            ]
     # Afficher les données de la table
     if st.button('Afficher les données de la table',key="tab2111AAZ"):
-        rows = data_p2.obtenir_tab2111_fait_matr_civils()
-        df_table = pd.DataFrame(rows, columns=[
-            'ID', 'Direction', 'Region', 'Departement', 'Année', 'Type de centre civil', 'Régime de bien commun',
-            'Régime de bien séparé'
-        ])
-        st.write('Données de la table tab2111_fait_matr_civils:')
-        st.dataframe(df_table)
+        st.dataframe(filtered_df)
 
     return
 
 
+
+# Page Streamlit
+def page_tab2112_fait_civil():
+    st.write("Tableau 2.1.12 : Faits d'état civil enregistrés et parvenus au niveau central selon le type de centre de la Région")
+
+    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab2112_faits_civils")
+
+    if uploaded_file is not None:
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
+
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+
+        # Afficher les données du fichier
+        st.dataframe(df)
+
+        # Vérifier les colonnes du fichier
+        expected_columns = ["direction", "region", "departement", "sous_prefecture", "faits_civil", "type_etat_civil",
+                            "annee", "nombre_fait"]
+
+        if all(column in df.columns for column in expected_columns):
+            # Bouton pour enregistrer les données dans la base de données
+            if st.button("Enregistrer les données dans la base de données"):
+                for _, row in df.iterrows():
+                    data_p2.enregistrement_tab2112_fait(
+                        row['direction'], row['region'], row['departement'], row['sous_prefecture'], row['faits_civil'],
+                        row['type_etat_civil'], row['annee'], row['nombre_fait']
+                    )
+                st.success("Les données du fichier ont été enregistrées avec succès!")
+        else:
+            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+
+    df = data_p2.obtenir_tab2112_fait()
+    if st.checkbox("Obtenir des données",key="tab2112obtenir"):
+        # Ajout des sélecteurs pour l'année, la région, le département et la sous-préfecture
+        annees = df['Annee'].unique()
+        regions = df['Region'].unique()
+        departements = df['Departement'].unique()
+        sous_prefectures = df['Sous-prefecture'].unique()
+        import numpy as np
+
+        # Convertissez sous_prefectures en une liste Python
+        sous_prefectures_list = sous_prefectures.tolist() if isinstance(sous_prefectures, np.ndarray) else list(
+            sous_prefectures)
+        sous_prefectures_list.append(None)
+        depart_list = departements.tolist() if isinstance(departements, np.ndarray) else list(
+            departements)
+        depart_list.append(None)
+        # Ajoutez None à la liste sous_prefectures_list
+
+
+        selected_annee = st.selectbox("Choisir l'année", annees,key="tab2112anne")
+        selected_region = st.selectbox("Choisir la région", regions,key="tab2112regio")
+        selected_dep = st.selectbox("Choisir le département", depart_list,key="tab2112depar")
+        selected_sous_prefecture = st.selectbox("Choisir la sous-préfecture", sous_prefectures_list, key="tab2112sous")
+
+        # Filtrer les données en fonction des sélections
+        filtered_df = df[
+            ((df['Annee'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'] == selected_dep) & (df['Sous-prefecture'] == selected_sous_prefecture)) |
+            ((df['Annee'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'] == selected_dep) & (df['Sous-prefecture'].isna())) |
+            ((df['Annee'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'].isna()) & (df['Sous-prefecture'].isna()))
+        ]
+
+        # Afficher les données de la table avec filtres
+        if st.button('Afficher les données de la table', key="tab2112AAB"):
+            st.dataframe(filtered_df)
+
+    return
+
+
+
+def page_tab2113_naiss_enreg_reg_dep():
+    st.write("Tableau 2.1.13 : Naissances enregistrées et parvenues au niveau central selon le type de centre de la Région")
+
+    uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab2113_naissances")
+
+    if uploaded_file is not None:
+        # Lire le fichier Excel et obtenir les noms des feuilles
+        excel_file = pd.ExcelFile(uploaded_file)
+        sheet_names = excel_file.sheet_names
+
+        # Sélecteur pour choisir la feuille
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+
+        # Lire la feuille choisie
+        df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+
+        # Afficher les données du fichier
+        st.dataframe(df)
+
+        # Vérifier les colonnes du fichier
+        expected_columns = ["direction", "region", "departement", "sous_prefecture", "annee", "faits_civil",
+                            "type_de_centre_civil", "dans_les_delais_3_mois", "hors_delai_4_12_mois",
+                            "hors_delai_plus_de_12_mois", "total_faits_naissance"]
+
+        if all(column in df.columns for column in expected_columns):
+            # Bouton pour enregistrer les données dans la base de données
+            if st.button("Enregistrer les données dans la base de données"):
+                for _, row in df.iterrows():
+                    data_p2.enregistrer_tab2113_fait_civi_naiss(
+                        row['direction'], row['region'], row['departement'], row['sous_prefecture'], row['annee'],
+                        row['faits_civil'], row['type_de_centre_civil'], row['dans_les_delais_3_mois'],
+                        row['hors_delai_4_12_mois'], row['hors_delai_plus_de_12_mois'], row['total_faits_naissance']
+                    )
+                st.success("Les données du fichier ont été enregistrées avec succès!")
+        else:
+            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+
+    df = data_p2.obtenir_tab2113_fait_civi_naiss()
+    if st.checkbox("Obtenir des données",key="tab2113obenir"):
+        # Ajout des sélecteurs pour l'année, la région, le département et la sous-préfecture
+        annees = df['Année'].unique()
+        regions = df['Région'].unique()
+        departements = df['Département'].unique()
+        sous_prefectures = df['Sous-préfecture'].unique()
+
+        selected_annee = st.selectbox("Choisir l'année", annees,key="tab2113anne")
+        selected_region = st.selectbox("Choisir la région", regions,key="tab2113region")
+        selected_dep = st.selectbox("Choisir le département", departements,key="tab2113depar")
+        selected_sous_prefecture = st.selectbox("Choisir la sous-préfecture", sous_prefectures,key="tab2113sous")
+
+        # Filtrer les données en fonction des sélections
+        filtered_df = df[
+            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'] == selected_sous_prefecture)) |
+            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'].isna())) |
+            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna()) & (df['Sous-préfecture'].isna()))
+        ]
+
+        # Afficher les données de la table avec filtres
+        if st.button('Afficher les données de la table', key="tab2113AAB"):
+            st.dataframe(filtered_df)
+
+    return
+
+
+
+# Page Streamlit
 def page_tab2114_fait_civi_deces():
     st.write("Tableau 2.1.14 : Faits d'état civil enregistrés pour les décès")
 
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab2114_faits_deces")
 
     if uploaded_file is not None:
-
         # Lire le fichier Excel et obtenir les noms des feuilles
         excel_file = pd.ExcelFile(uploaded_file)
         sheet_names = excel_file.sheet_names
@@ -563,16 +599,32 @@ def page_tab2114_fait_civi_deces():
         else:
             st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    if st.button('Afficher les données de la table', key="tab2114AAB"):
-        rows = data_p2.obtenir_tab2114_fait_civi_deces()
-        df_table = pd.DataFrame(rows, columns=[
-            'ID', 'Direction', 'Région', 'Département', 'Sous-préfecture', 'Année', 'Faits civils', 'Type de centre civil',
-            'Dans les délais 15 jours', 'Hors délai année en cours', 'Hors délai des années antérieures', 'Total faits de décès'
-        ])
-        st.write('Données de la table tab2114_fait_civi_deces:')
-        st.dataframe(df_table)
+    df = data_p2.obtenir_tab2114_fait_civi_deces()
+    if st.checkbox("Obtenir des données",key="tab214obtenir"):
+        # Ajout des sélecteurs pour l'année, la région, le département et la sous-préfecture
+        annees = df['Année'].unique()
+        regions = df['Région'].unique()
+        departements = df['Département'].unique()
+        sous_prefectures = df['Sous-préfecture'].unique()
+
+        selected_annee = st.selectbox("Choisir l'année", annees,key="tab2114annee")
+        selected_region = st.selectbox("Choisir la région", regions,key="tab2114region")
+        selected_dep = st.selectbox("Choisir le département", departements,key="tab2114depart")
+        selected_sous_prefecture = st.selectbox("Choisir la sous-préfecture", sous_prefectures,key="tab2114souspref")
+
+        # Filtrer les données en fonction des sélections
+        filtered_df = df[
+            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'] == selected_sous_prefecture)) |
+            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'].isna())) |
+            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna()) & (df['Sous-préfecture'].isna()))
+        ]
+
+        # Afficher les données de la table avec filtres
+        if st.button('Afficher les données de la table', key="tab2114AAB"):
+            st.dataframe(filtered_df)
 
     return
+
 
 
 
@@ -611,15 +663,34 @@ def page_tab2115_fait_naiss_deces():
         else:
             st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    # Afficher les données de la table
-    if st.button('Afficher les données de la table', key="tab2115AAB"):
-        rows = data_p2.obtenir_tab2115_fait_naiss_deces()
-        df_table = pd.DataFrame(rows, columns=[
-            'ID', 'Direction', 'Région', 'Département', 'Sous-préfecture', 'Année', 'Naissances centre principal',
-            'Naissances centre secondaire', 'Total naissances', 'Décès centre principal', 'Décès centre secondaire',
-            'Total décès'
-        ])
-        st.write('Données de la table tab2115_fait_naiss_deces:')
-        st.dataframe(df_table)
+    df = data_p2.obtenir_tab2115_fait_naiss_deces()
+    if st.checkbox("Obtenir des données",key="tab2115obtenir"):
+        # Ajout des sélecteurs pour l'année et la sous-préfecture
+        annees = df['Année'].unique()
+        sous_prefectures = df['Sous-préfecture'].unique()
+        departement=df['Département'].unique()
+        region=df['Région'].unique()
+
+        selected_annee = st.selectbox("Choisir l'année", annees,key="tab2115anne")
+        selected_region=st.selectbox("Choisir la région:",region,key="tab2115region")
+        selected_dep = st.selectbox("Choisir le département", departement,key="tab2115departemnt")
+        selected_sous_prefecture = st.selectbox("Choisir la sous-préfecture", sous_prefectures,key="tab2115souspre")
+
+
+        # Filtrer les données en fonction des sélections
+        # Filtrage des données en fonction des critères sélectionnés
+        filtered_df = df[
+            ((df['Année'] == selected_annee) & (df['Département'] == selected_dep) & (
+                        df['Sous-préfecture'] == selected_sous_prefecture)&(df['Région']==selected_region)) |
+            ((df['Année'] == selected_annee) & (df['Département'] == selected_dep) & (df['Sous-préfecture'].isna()))|
+            ((df['Année'] == selected_annee) & (df['Département'].isna()) & (df['Sous-préfecture'].isna()))
+            ]
+
+        # Afficher les données de la table avec filtres
+        if st.button('Afficher les données de la table', key="tab2115AAB"):
+
+
+            #st.write(f'Données filtrées pour l\'année {selected_annee} et la sous-préfecture {selected_sous_prefecture}:')
+            st.dataframe(filtered_df)
 
     return
