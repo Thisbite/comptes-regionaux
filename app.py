@@ -8,7 +8,7 @@ import partie_II
 
 # Titre de l'application
 st.set_page_config(page_title="comptes regionaux", page_icon="👗", layout="wide")
-st.title("Base de données des annuaires statistiques")
+st.title("Saisie des données ")
 
 st.sidebar.title("Menu")
 if 'logged_in' not in st.session_state:

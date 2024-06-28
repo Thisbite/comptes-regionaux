@@ -165,9 +165,7 @@ def page_tab_213_pop_depart_sous():
 Les tableaux tab213 jusqu'à tab216 sont contenus dans tab213. Ce sont des données de population désagrégé par sous-préfecture
 '''
 def page_tab217_evolution_pop():
-
-
-    st.write("Tableau 2.1.7: Evolution de la population de la région ,par département et par sexe sur les  années")
+    st.write("Tableau 2.1.7: Evolution de la population de la région, par département et par sexe sur les années")
 
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab217_evolu_pop_reg_dep")
 
@@ -182,13 +180,11 @@ def page_tab217_evolution_pop():
         # Lire la feuille choisie
         df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
 
-
         # Afficher les données du fichier
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "annee", "departement", "sous_prefecture", "hommes", "femmes",
-                            "total_sexe", "densite"]
+        expected_columns = ["direction", "region", "annee", "departement", "sous_prefecture", "hommes", "femmes", "total_sexe", "densite"]
 
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
@@ -200,17 +196,37 @@ def page_tab217_evolution_pop():
                     )
                 st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    # Afficher les données de la table
-    if st.button('Afficher les données de la table',key="tab214AABT"):
-        rows = data_p2.obtenir_tab217_evolu_pop_reg_dep()
+    df = data_p2.obtenir_tab217_evolu_pop_reg_dep()
+    if st.checkbox("Obtenir des données", key="tab217obtenir"):
+        # Ajout des sélecteurs pour l'année, la région, le département et la sous-préfecture
+        annees = df['annee'].unique()
+        regions = df['Région'].unique()
+        departements = df['Département'].unique()
+        sous_prefectures = df['sous_prefecture'].unique()
 
-        st.write('Données de la table ')
-        st.dataframe(rows)
+        selected_annee = st.selectbox("Choisir l'année", annees, key="tab217annee")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab217region")
+        selected_dep = st.selectbox("Choisir le département", departements, key="tab217departement")
+
+
+        # Filtrer les données en fonction des sélections
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) ],
+
+            df[(df['Année'] == selected_annee)  & (df['Région'] == selected_region) & (df['Département'].isna())]
+        ]
+
+        # Afficher les données de la table avec filtres
+        if st.button('Afficher les données de la table', key="tab217AAB"):
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
 
     return
+
 
 
 def page_tab218_maria_eta_civ_regim():
@@ -245,11 +261,30 @@ def page_tab218_maria_eta_civ_regim():
         else:
             st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    if st.button('Afficher les données de la table', key="tab218AAB"):
-        rows = data_p2.obtenir_tab218_maria_eta_civ_regim()
+    df = data_p2.obtenir_tab218_maria_eta_civ_regim()
+    if st.checkbox("Obtenir des données", key="tab218obtenir"):
+        # Ajout des sélecteurs pour l'année, la région et le département
+        annees = df['Année'].unique()
+        regions = df['Région'].unique()
+        departements = df['Département'].unique()
 
-        st.write('Données de la table tab218_maria_eta_civ_regim:')
-        st.dataframe(rows)
+        selected_annee = st.selectbox("Choisir l'année", annees, key="tab218annee")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab218region")
+        selected_dep = st.selectbox("Choisir le département", departements, key="tab218departement")
+
+        # Filtrer les données en fonction des sélections
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep)],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna())],
+            df[(df['Année'] == selected_annee) & (df['Région'].isna()) & (df['Département'].isna())]
+        ]
+
+        # Afficher les données de la table avec filtres
+        if st.button('Afficher les données de la table', key="tab218AAB"):
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
 
     return
 
@@ -293,16 +328,35 @@ def page_tab219_mariage_matrimon():
                     )
                 st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    if st.button('Afficher les données de la table', key="tab214AABG"):
-        rows =data_p2.obtenir_tab219_maria_regim()
+    df = data_p2.obtenir_tab219_maria_regim()
+    if st.checkbox("Obtenir des données", key="tab219obtenir"):
+        # Ajout des sélecteurs pour l'année, la région et le département
+        annees = df['Année'].unique()
+        regions = df['Région'].unique()
+        departements = df['Département'].unique()
 
-        st.write('Données de la table ')
-        st.dataframe(rows)
+        selected_annee = st.selectbox("Choisir l'année", annees, key="tab219annee")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab219region")
+        selected_dep = st.selectbox("Choisir le département", departements, key="tab219departement")
+
+        # Filtrer les données en fonction des sélections
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep)],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna())],
+            df[(df['Année'] == selected_annee) & (df['Région'].isna()) & (df['Département'].isna())]
+        ]
+
+        # Afficher les données de la table avec filtres
+        if st.button('Afficher les données de la table', key="tab219AAB"):
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
 
     return
+
 
 
 
@@ -340,17 +394,37 @@ def page_tab2110_mariage_civil():
                     )
                 st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    # Afficher les données de la table
-    if st.button('Afficher les données de la table', key="tab2110AAB"):
-        rows = data_p2.obtenir_tab2110_maria_centre_civil_dep()
+    df = data_p2.obtenir_tab2110_maria_centre_civil_dep()
+    if st.checkbox("Obtenir des données", key="tab2110obtenir"):
+        # Ajout des sélecteurs pour l'année, la région, le département et la sous-préfecture
+        annees = df['Année'].unique()
+        regions = df['Région'].unique()
+        departements = df['Département'].unique()
 
-        st.write('Données de la table tab2110_maria_centre_civil_dep:')
-        st.dataframe(rows)
+
+        selected_annee = st.selectbox("Choisir l'année", annees, key="tab2110annee")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab2110region")
+        selected_dep = st.selectbox("Choisir le département", departements, key="tab2110departement")
+
+
+        # Filtrer les données en fonction des sélections
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) ],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep)],
+
+        ]
+
+        # Afficher les données de la table avec filtres
+        if st.button('Afficher les données de la table', key="tab2110AAB"):
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
 
     return
+
 
 
 
@@ -409,17 +483,23 @@ def page_tab2111_fait_matr_civils():
 
 
         # Filtrer les données en fonction des sélections
-        filtered_df = df[
-            ((df['Année'] == selected_annee) & (df['Region'] == selected_region) & (
-                        df['Departement'] == selected_dep) ) |
-            ((df['Année'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'].isna()))
-            ]
+
     # Afficher les données de la table
-    if st.button('Afficher les données de la table',key="tab2111AAZ"):
-        st.dataframe(filtered_df)
 
-    return
+    # Filtrer les données en fonction des sélections
 
+
+    # Afficher les données de la table avec filtres
+    if st.button('Afficher les données de la table', key="tab2111AAZ"):
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Region'] == selected_region) & (
+                        df['Departement'] == selected_dep)],
+            df[(df['Année'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'].isna())]
+        ]
+        for filtered_df in filtered_dfs:
+            if not filtered_df.empty:
+                st.dataframe(filtered_df)
+                break
 
 
 # Page Streamlit
@@ -483,15 +563,21 @@ def page_tab2112_fait_civil():
         selected_sous_prefecture = st.selectbox("Choisir la sous-préfecture", sous_prefectures_list, key="tab2112sous")
 
         # Filtrer les données en fonction des sélections
-        filtered_df = df[
-            ((df['Annee'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'] == selected_dep) & (df['Sous-prefecture'] == selected_sous_prefecture)) |
-            ((df['Annee'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'] == selected_dep) & (df['Sous-prefecture'].isna())) |
-            ((df['Annee'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'].isna()) & (df['Sous-prefecture'].isna()))
+        filtered_dfs = [
+        df[(df['Annee'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'] == selected_dep) & (
+                    df['Sous-prefecture'] == selected_sous_prefecture)],
+        df[(df['Annee'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'] == selected_dep) & (
+            df['Sous-prefecture'].isna())],
+        df[(df['Annee'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'].isna()) & (
+            df['Sous-prefecture'].isna())]
         ]
 
-        # Afficher les données de la table avec filtres
-        if st.button('Afficher les données de la table', key="tab2112AAB"):
-            st.dataframe(filtered_df)
+    # Afficher les données de la table avec filtres
+    if st.button('Afficher les données de la table', key="tab2112AAB"):
+        for filtered_df in filtered_dfs:
+            if not filtered_df.empty:
+                st.dataframe(filtered_df)
+                break
 
     return
 
@@ -548,15 +634,22 @@ def page_tab2113_naiss_enreg_reg_dep():
         selected_sous_prefecture = st.selectbox("Choisir la sous-préfecture", sous_prefectures,key="tab2113sous")
 
         # Filtrer les données en fonction des sélections
-        filtered_df = df[
-            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'] == selected_sous_prefecture)) |
-            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'].isna())) |
-            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna()) & (df['Sous-préfecture'].isna()))
+        # Filtrer les données en fonction des sélections
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (
+                        df['Département'] == selected_dep) & (df['Sous-préfecture'] == selected_sous_prefecture)],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (
+                        df['Département'] == selected_dep) & (df['Sous-préfecture'].isna())],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna()) & (
+                df['Sous-préfecture'].isna())]
         ]
 
         # Afficher les données de la table avec filtres
         if st.button('Afficher les données de la table', key="tab2113AAB"):
-            st.dataframe(filtered_df)
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
 
     return
 
@@ -613,18 +706,60 @@ def page_tab2114_fait_civi_deces():
         selected_sous_prefecture = st.selectbox("Choisir la sous-préfecture", sous_prefectures,key="tab2114souspref")
 
         # Filtrer les données en fonction des sélections
-        filtered_df = df[
-            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'] == selected_sous_prefecture)) |
-            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'].isna())) |
-            ((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna()) & (df['Sous-préfecture'].isna()))
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (
+                        df['Département'] == selected_dep) & (df['Sous-préfecture'] == selected_sous_prefecture)],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (
+                        df['Département'] == selected_dep) & (df['Sous-préfecture'].isna())],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna()) & (
+                df['Sous-préfecture'].isna())]
         ]
 
         # Afficher les données de la table avec filtres
         if st.button('Afficher les données de la table', key="tab2114AAB"):
-            st.dataframe(filtered_df)
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
+
+    if st.checkbox("Modifier une ligne existante"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Region", selected_row['Région'])
+            departement = st.text_input("Departement", selected_row['Département'])
+            sous_prefecture = st.text_input("Sous-prefecture", selected_row['Sous-préfecture'])
+            annee = st.text_input("Année", selected_row['Année'])
+            faits_civil = st.text_input("Faits Civil", selected_row['Faits civils'])
+            type_de_centre_civil = st.text_input("Type de Centre Civil", selected_row['Type de centre civil'])
+            dans_les_delais_15_jour = st.number_input("Dans les délais 15 jours",
+                                                      selected_row['Hors délai année en cours'])
+            hors_delai_annee_cours = st.number_input("Hors délai année en cours",
+                                                     selected_row['Hors délai année en cours'])
+            hors_delai_des_annees_anteri = st.number_input("Hors délai des années antérieures",
+                                                           selected_row['Hors délai des années antérieures'])
+            total_faits_deces = st.number_input("Total faits décès", selected_row['Total faits de décès'])
+
+            if st.button("Modifier la ligne"):
+                success = data_p2.modifier_tab2114_fait_civi_deces(selected_id, direction, region, departement, sous_prefecture,
+                                                           annee,
+                                                           faits_civil, type_de_centre_civil, dans_les_delais_15_jour,
+                                                           hors_delai_annee_cours, hors_delai_des_annees_anteri,
+                                                           total_faits_deces)
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
+    if st.button("Supprimer les doublons",key="tab2114doub"):
+        if data_p2.supprimer_doublons_tab2114_fait_civi_deces():
+            st.success("Les doublons ont été supprimés avec succès!")
+        else:
+            st.error("Une erreur s'est produite lors de la suppression des doublons.")
 
     return
-
 
 
 
@@ -646,51 +781,65 @@ def page_tab2115_fait_naiss_deces():
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "departement", "sous_prefecture", "annee", "nbre_naiss_centr_princ",
-                            "nbre_naiss_centr_second", "nbre_total_naiss", "nbre_deces_centr_princ",
-                            "nbre_deces_centr_second", "nbre_total_deces"]
+        expected_columns = [
+            "direction", "region", "departement", "sous_prefecture", "annee",
+            "nbre_naiss_centr_princ", "nbre_naiss_centr_second", "nbre_total_naiss",
+            "nbre_deces_centr_princ", "nbre_deces_centr_second", "nbre_total_deces"
+        ]
 
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
             if st.button("Enregistrer les données dans la base de données"):
+                doublon_detecte = False
                 for _, row in df.iterrows():
-                    data_p2.enregistrer_tab2115_fait_naiss_deces(
+                    success = data_p2.enregistrer_tab2115_fait_naiss_deces(
                         row['direction'], row['region'], row['departement'], row['sous_prefecture'], row['annee'],
                         row['nbre_naiss_centr_princ'], row['nbre_naiss_centr_second'], row['nbre_total_naiss'],
                         row['nbre_deces_centr_princ'], row['nbre_deces_centr_second'], row['nbre_total_deces']
                     )
-                st.success("Les données du fichier ont été enregistrées avec succès!")
+                    if not success:
+                        doublon_detecte = True
+
+                if doublon_detecte:
+                    st.warning("Certaines données ont déjà été enregistrées.")
+                else:
+                    st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
             st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
     df = data_p2.obtenir_tab2115_fait_naiss_deces()
-    if st.checkbox("Obtenir des données",key="tab2115obtenir"):
-        # Ajout des sélecteurs pour l'année et la sous-préfecture
+    if st.checkbox("Obtenir des données", key="tab2115obtenir"):
+        # Ajout des sélecteurs pour l'année, la sous-préfecture, le département et la région
         annees = df['Année'].unique()
         sous_prefectures = df['Sous-préfecture'].unique()
-        departement=df['Département'].unique()
-        region=df['Région'].unique()
+        departements = df['Département'].unique()
+        regions = df['Région'].unique()
 
-        selected_annee = st.selectbox("Choisir l'année", annees,key="tab2115anne")
-        selected_region=st.selectbox("Choisir la région:",region,key="tab2115region")
-        selected_dep = st.selectbox("Choisir le département", departement,key="tab2115departemnt")
-        selected_sous_prefecture = st.selectbox("Choisir la sous-préfecture", sous_prefectures,key="tab2115souspre")
-
+        selected_annee = st.selectbox("Choisir l'année", annees, key="tab2115anne")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab2115region")
+        selected_dep = st.selectbox("Choisir le département", departements, key="tab2115departement")
+        selected_sous_prefecture = st.selectbox("Choisir la sous-préfecture", sous_prefectures, key="tab2115souspre")
 
         # Filtrer les données en fonction des sélections
-        # Filtrage des données en fonction des critères sélectionnés
-        filtered_df = df[
-            ((df['Année'] == selected_annee) & (df['Département'] == selected_dep) & (
-                        df['Sous-préfecture'] == selected_sous_prefecture)&(df['Région']==selected_region)) |
-            ((df['Année'] == selected_annee) & (df['Département'] == selected_dep) & (df['Sous-préfecture'].isna()))|
-            ((df['Année'] == selected_annee) & (df['Département'].isna()) & (df['Sous-préfecture'].isna()))
-            ]
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) &
+               (df['Département'] == selected_dep) & (df['Sous-préfecture'] == selected_sous_prefecture)],
+            df[(df['Année'] == selected_annee) & (df['Département'] == selected_dep) & (df['Sous-préfecture'].isna())],
+            df[(df['Année'] == selected_annee) & (df['Département'].isna()) & (df['Sous-préfecture'].isna())]
+        ]
 
         # Afficher les données de la table avec filtres
         if st.button('Afficher les données de la table', key="tab2115AAB"):
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
 
-
-            #st.write(f'Données filtrées pour l\'année {selected_annee} et la sous-préfecture {selected_sous_prefecture}:')
-            st.dataframe(filtered_df)
+    # Bouton pour supprimer les doublons
+    if st.button("Supprimer les doublons",key="tab2115doub"):
+        if data_p2.supprimer_doublons_tab2115_fait_naiss_deces():
+            st.success("Les doublons ont été supprimés avec succès!")
+        else:
+            st.error("Une erreur s'est produite lors de la suppression des doublons.")
 
     return

@@ -6,31 +6,27 @@ conn = sqlite3.connect(DATABASE)
 cursor = conn.cursor()
 
 
+
 def creer_table_part2():
-
-
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab2115_fait_naiss_deces(
-        id INTEGER PRIMARY KEY ,
-        direction TEXT,
-        region TEXT,
-        departement TEXT,
-        sous_prefecture TEXT,
-        annee TEXT,
-        nbre_naiss_centr_princ INTEGER,
-        nbre_naiss_centr_second INTEGER,
-        nbre_total_naiss INTEGER,
-       nbre_deces_centr_princ INTEGER,
-        nbre_deces_centr_second INTEGER,
-        nbre_total_deces INTEGER
+        CREATE TABLE IF NOT EXISTS tab2115_fait_naiss_deces (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            direction TEXT,
+            region TEXT,
+            departement TEXT,
+            sous_prefecture TEXT,
+            annee INTEGER,
+            nbre_naiss_centr_princ INTEGER,
+            nbre_naiss_centr_second INTEGER,
+            nbre_total_naiss INTEGER,
+            nbre_deces_centr_princ INTEGER,
+            nbre_deces_centr_second INTEGER,
+            nbre_total_deces INTEGER,
+            UNIQUE(direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces)
         )
         '''
     )
-
-
-
-
 
     cursor.execute(
         '''
@@ -274,27 +270,6 @@ def obtenir_tab217_evolu_pop_reg_dep():
 
 
 
-def enregistrer_tab218_maria_eta_civ_regim(direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO tab218_maria_eta_civ_regim (direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang))
-    conn.commit()
-    conn.close()
-
-def obtenir_tab218_maria_eta_civ_regim():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM tab218_maria_eta_civ_regim')
-    rows = cursor.fetchall()
-    df = pd.DataFrame(rows, columns=[
-        'ID', 'Direction', 'Région', 'Département', 'Année', 'Couple ivoirien', 'Couple mixte', 'Couple étranger'
-    ])
-    conn.close()
-    return df
-
 
 
 def enregistrer_tab213_pop_dep_tranc_s_pref_sex(direction, region, annee, departement, sous_prefecture, tranche_age,
@@ -382,6 +357,30 @@ def obtenir_tab211_pop_dep_sous_pref_sex():
     ])
     conn.close()
     return df_table
+
+
+
+
+def enregistrer_tab218_maria_eta_civ_regim(direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO tab218_maria_eta_civ_regim (direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', (direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang))
+    conn.commit()
+    conn.close()
+
+def obtenir_tab218_maria_eta_civ_regim():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab218_maria_eta_civ_regim')
+    rows = cursor.fetchall()
+    df = pd.DataFrame(rows, columns=[
+        'ID', 'Direction', 'Région', 'Département', 'Année', 'Couple ivoirien', 'Couple mixte', 'Couple étranger'
+    ])
+    conn.close()
+    return df
 
 
 # Fonction d'enregistrement pour la table tab219_maria_eta_civ_regim
@@ -556,18 +555,31 @@ def obtenir_tab2113_fait_civi_naiss():
     return df
 
 
-def enregistrer_tab2114_fait_civi_deces(direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces):
+
+def enregistrer_tab2114_fait_civi_deces(direction, region, departement, sous_prefecture, annee, faits_civil,
+                                         type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours,
+                                         hors_delai_des_annees_anteri, total_faits_deces):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute(
-        '''
-        INSERT INTO tab2114_fait_civi_deces (direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
-        ''',
-        (direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces)
-    )
-    conn.commit()
-    conn.close()
+
+    try:
+        cursor.execute(
+            '''
+            INSERT INTO tab2114_fait_civi_deces (direction, region, departement, sous_prefecture, annee, faits_civil,
+                                                 type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours,
+                                                 hors_delai_des_annees_anteri, total_faits_deces)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''',
+            (direction, region, departement, sous_prefecture, annee, faits_civil, type_de_centre_civil,
+             dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces)
+        )
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conn.close()
+
 
 def obtenir_tab2114_fait_civi_deces():
     conn = sqlite3.connect(DATABASE)
@@ -582,19 +594,117 @@ def obtenir_tab2114_fait_civi_deces():
     conn.close()
     return df
 
-
-def enregistrer_tab2115_fait_naiss_deces(direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces):
+def supprimer_doublons_tab2114_fait_civi_deces():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute(
-        '''
-        INSERT INTO tab2115_fait_naiss_deces (direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''',
-        (direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces)
-    )
-    conn.commit()
-    conn.close()
+
+    try:
+        # Sélectionner les lignes uniques
+        cursor.execute(
+            '''
+            SELECT DISTINCT direction, region, departement, sous_prefecture, annee, faits_civil, type_de_centre_civil,
+                            dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces
+            FROM tab2114_fait_civi_deces
+            '''
+        )
+        unique_rows = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab2114_fait_civi_deces')
+
+        # Réinsérer les lignes uniques
+        cursor.executemany(
+            '''
+            INSERT INTO tab2114_fait_civi_deces (direction, region, departement, sous_prefecture, annee, faits_civil,
+                                                 type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours,
+                                                 hors_delai_des_annees_anteri, total_faits_deces)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''',
+            unique_rows
+        )
+
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
+
+def modifier_tab2114_fait_civi_deces(id, direction, region, departement, sous_prefecture, annee, faits_civil,
+                                     type_de_centre_civil, dans_les_delais_15_jour, hors_delai_annee_cours,
+                                     hors_delai_des_annees_anteri, total_faits_deces):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab2114_fait_civi_deces
+            SET direction = ?, region = ?, departement = ?, sous_prefecture = ?, annee = ?, faits_civil = ?,
+                type_de_centre_civil = ?, dans_les_delais_15_jour = ?, hors_delai_annee_cours = ?,
+                hors_delai_des_annees_anteri = ?, total_faits_deces = ?
+            WHERE id = ?
+            ''',
+            (direction, region, departement, sous_prefecture, annee, faits_civil, type_de_centre_civil,
+             dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+
+
+
+
+
+
+
+
+def enregistrer_tab2115_fait_naiss_deces(direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ,
+                                         nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ,
+                                         nbre_deces_centr_second, nbre_total_deces):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        # Vérifier si l'enregistrement existe déjà
+        cursor.execute(
+            '''
+            SELECT 1 FROM tab2115_fait_naiss_deces WHERE 
+            direction = ? AND region = ? AND departement = ? AND sous_prefecture = ? AND annee = ? AND 
+            nbre_naiss_centr_princ = ? AND nbre_naiss_centr_second = ? AND nbre_total_naiss = ? AND 
+            nbre_deces_centr_princ = ? AND nbre_deces_centr_second = ? AND nbre_total_deces = ?
+            ''',
+            (direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second,
+             nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces)
+        )
+        if cursor.fetchone():
+            # L'enregistrement existe déjà
+            return False
+        else:
+            # L'enregistrement n'existe pas, on peut l'insérer
+            cursor.execute(
+                '''
+                INSERT INTO tab2115_fait_naiss_deces (direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''',
+                (direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ, nbre_naiss_centr_second,
+                 nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces)
+            )
+            conn.commit()
+            return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conn.close()
+
+
 
 def obtenir_tab2115_fait_naiss_deces():
     conn = sqlite3.connect(DATABASE)
@@ -606,3 +716,41 @@ def obtenir_tab2115_fait_naiss_deces():
                                      "Décès enregistrés dans Centre secondaire","Décès total  enregistré"])
     conn.close()
     return df
+
+def supprimer_doublons_tab2115_fait_naiss_deces():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        # Sélectionner les lignes uniques
+        cursor.execute(
+            '''
+            SELECT DISTINCT direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ,
+                            nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second,
+                            nbre_total_deces
+            FROM tab2115_fait_naiss_deces
+            '''
+        )
+        unique_rows = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab2115_fait_naiss_deces')
+
+        # Réinsérer les lignes uniques
+        cursor.executemany(
+            '''
+            INSERT INTO tab2115_fait_naiss_deces (direction, region, departement, sous_prefecture, annee, 
+                                                  nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss, 
+                                                  nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''',
+            unique_rows
+        )
+
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
