@@ -34,8 +34,8 @@ def partie_II_annuaire():
 
 
 def page_tab211_pop_region_depart():
+    st.write("Tableau 2.1.1: Population de la région, par Département et par sous-préfecture")
 
-    st.write("Tableau 2.1.1: Population de la région , par Département et par sous-préfecture")
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab211_pop_dep_sous_pref_sex")
 
     if uploaded_file is not None:
@@ -48,7 +48,6 @@ def page_tab211_pop_region_depart():
 
         # Lire la feuille choisie
         df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
-
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
@@ -58,24 +57,84 @@ def page_tab211_pop_region_depart():
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
             if st.button("Enregistrer les données dans la base de données"):
+                doublon_detecte = False
                 for _, row in df.iterrows():
-                    data_p2.enregistrer_tab211_pop_dep_sous_pref_sex(
+                    success = data_p2.enregistrer_tab211_pop_dep_sous_pref_sex(
                         row['direction'], row['region'], row['annee'], row['departement'],
                         row['sous_prefecture'], row['hommes'], row['femmes'],
                         row['total_sexe'], row['rapport_masculinite']
                     )
-                st.success("Les données du fichier ont été enregistrées avec succès!")
+                    if not success:
+                        doublon_detecte = True
+
+                if doublon_detecte:
+                    st.warning("Certaines données ont déjà été enregistrées.")
+                else:
+                    st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    # Afficher les données de la table
-    if st.button('Afficher les données de la table'):
-        rows = data_p2.obtenir_tab211_pop_dep_sous_pref_sex()
+    df = data_p2.obtenir_tab211_pop_dep_sous_pref_sex()
 
-        st.write('Données de Population de la région , par Département et par sous-préfecture')
-        st.dataframe(rows)
+    if st.checkbox("Obtenir des données", key="tab211obtenir"):
+        # Ajout des sélecteurs pour l'année, la région, le département et la sous-préfecture
+        annees = df['Année'].unique()
+        regions = df['Région'].unique()
+        departements = df['Département'].unique()
+        sous_prefectures = df['Sous-préfecture'].unique().tolist()
+        sous_prefectures.append("None")
 
+        selected_annee = st.selectbox("Choisir l'année", annees, key="tab211an")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab211regio")
+        selected_dep = st.selectbox("Choisir le département", departements, key="tab211dep")
+        selected_sous = st.selectbox("Choisir la sous-préfecture", sous_prefectures, key="tab211sou")
+
+        # Filtrer les données en fonction des sélections
+        filtered_dfs = [
+            df[((df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'] == selected_sous))],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (
+                        df['Département'] == selected_dep) & (df['Sous-préfecture'].isna())],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna()) & (
+                df['Sous-préfecture'].isna())]
+
+
+        ]
+
+        # Afficher les données de la table avec filtres
+        if st.button('Recherche de données de la table', key="tab211AAB"):
+            data_p2.supprimer_doublons_tab211_pop_dep_sous_pref_sex()
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
+
+    # Sélection d'une ligne pour modification
+    if st.checkbox("Modifier une ligne existante", key="tab211modiA"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'], key="tab211sel")
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Région", selected_row['Région'])
+            annee = st.text_input("Année", selected_row['Année'])
+            departement = st.text_input("Département", selected_row['Département'])
+            sous_prefecture = st.text_input("Sous-préfecture", selected_row['Sous-préfecture'])
+            hommes = st.number_input("Hommes", selected_row['Hommes'])
+            femmes = st.number_input("Femmes", selected_row['Femmes'])
+            total_sexe = st.number_input("Total sexe", selected_row['Total_sexe'])
+            rapport_masculinite = st.number_input("Rapport masculinité", selected_row['Rapport_masculinite'])
+
+            if st.button("Modifier la ligne", key="tab211modi"):
+                success = data_p2.modifier_tab211_pop_dep_sous_pref_sex(
+                    selected_id, direction, region, annee, departement, sous_prefecture, hommes, femmes,
+                    total_sexe, rapport_masculinite
+                )
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
+    return
 
 
 def page_tab212_repart_pop_group_age():
@@ -104,12 +163,19 @@ def page_tab212_repart_pop_group_age():
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
             if st.button("Enregistrer les données dans la base de données"):
+                doublon_detecte = False
                 for _, row in df.iterrows():
-                    data_p2.enregistrer_tab212_repa_pop_grou_age(
+                    success = data_p2.enregistrer_tab212_repa_pop_grou_age(
                         row['direction'], row['region'], row['annee'], row['groupe_age'],
                         row['hommes'], row['femmes'], row['total_sexe'], row['rapport_masculinite']
                     )
-                st.success("Les données du fichier ont été enregistrées avec succès!")
+                    if not success:
+                        doublon_detecte = True
+
+                if doublon_detecte:
+                    st.warning("Certaines données ont déjà été enregistrées.")
+                else:
+                    st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
             st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
@@ -117,24 +183,30 @@ def page_tab212_repart_pop_group_age():
 
     # Obtenir des données avec des sélecteurs
     if st.checkbox("Obtenir des données", key="tab212obtenir"):
-        # Ajout des sélecteurs pour l'année et le groupe d'âge
+        # Ajout des sélecteurs pour l'année, la région et le groupe d'âge
         annees = df['Année'].unique()
+        regions = df['Région'].unique()
         groupes_age = df["Tranche d'âge"].unique()
-        regions=df["Région"].unique()
-
 
         selected_annee = st.selectbox("Choisir l'année", annees, key="tab212annee")
-        selected_region = st.selectbox("Choisir la région", regions, key="tab212AZA")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab212region")
         selected_groupe_age = st.selectbox("Choisir le groupe d'âge", groupes_age, key="tab212groupeage")
 
-
         # Filtrer les données en fonction des sélections
-        filtered_df = df[(df['Année'] == selected_annee) & (df['Tranche d\'âge'] == selected_groupe_age)&(df["Région"]==selected_region)]
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df["Tranche d'âge"] == selected_groupe_age)],
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df["Tranche d'âge"].isna())],
+            df[(df['Année'] == selected_annee) & (df['Région'].isna()) & (df["Tranche d'âge"].isna())],
+            df[(df['Année'] == selected_annee) & (df['Région'].isna()) & (df["Tranche d'âge"].isna())]
+        ]
 
         st.write("NB: Un double clique permet de supprimer les doublons")
         if st.button('Afficher les données de la table', key="tab212AAB"):
             data_p2.supprimer_doublons_tab212_repa_pop_grou_age()
-            st.dataframe(filtered_df)
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
 
     # Sélection d'une ligne pour modification
     if st.checkbox("Modifier une ligne existante", key="tab212modiA"):
@@ -143,14 +215,14 @@ def page_tab212_repart_pop_group_age():
         if selected_id:
             selected_row = df[df['ID'] == selected_id].iloc[0]
 
-            direction = st.text_input("Direction", selected_row['Direction régionale'])
+            direction = st.text_input("Direction", selected_row['Direction'])
             region = st.text_input("Région", selected_row['Région'])
             annee = st.text_input("Année", selected_row['Année'])
             groupe_age = st.text_input("Groupe d'âge", selected_row["Tranche d'âge"])
-            hommes = st.text_input("Hommes", selected_row["Nombre d'hommes"])
-            femmes = st.text_input("Femmes", selected_row[" Nombre de femmes"])
-            total_sexe = st.text_input("Total sexe", selected_row["Total sexe"])
-            rapport_masculinite = st.text_input("Rapport masculinité", selected_row["Rapport masculinité"])
+            hommes = st.number_input("Hommes", selected_row["Nombre d'hommes"])
+            femmes = st.number_input("Femmes", selected_row["Nombre de femmes"])
+            total_sexe = st.number_input("Total sexe", selected_row["Total sexe"])
+            rapport_masculinite = st.number_input("Rapport masculinité", selected_row["Rapport masculinité"])
 
             if st.button("Modifier la ligne", key="tab212modi"):
                 success = data_p2.modifier_tab212_repa_pop_grou_age(
@@ -162,6 +234,7 @@ def page_tab212_repart_pop_group_age():
                     st.error("Une erreur s'est produite lors de la modification de la ligne.")
 
     return
+
 
 
 
@@ -181,7 +254,7 @@ def page_tab_213_pop_depart_sous():
         sheet_names = excel_file.sheet_names
 
         # Sélecteur pour choisir la feuille
-        sheet_name = st.selectbox("Choisir la feuille", sheet_names)
+        sheet_name = st.selectbox("Choisir la feuille", sheet_names,key="tab213ses")
 
         # Lire la feuille choisie
         df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
@@ -194,7 +267,7 @@ def page_tab_213_pop_depart_sous():
 
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
-            if st.button("Enregistrer les données dans la base de données"):
+            if st.button("Enregistrer les données dans la base de données",key="tab213be"):
                 for _, row in df.iterrows():
                     data_p2.enregistrer_tab213_pop_dep_tranc_s_pref_sex(
                         row['direction'], row['region'], row['annee'], row['departement'],
@@ -228,6 +301,7 @@ def page_tab_213_pop_depart_sous():
 
         st.write("NB: Un double clique permet de supprimer les doublons")
         if st.button('Recherche de données de la table', key="tab213AAB"):
+            data_p2.supprimer_doublons_tab213_pop_dep_tranc_s_pref_sex()
             for filtered_df in filtered_dfs:
                 if not filtered_df.empty:
                     st.dataframe(filtered_df)

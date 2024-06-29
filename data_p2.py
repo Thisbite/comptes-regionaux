@@ -7,6 +7,7 @@ cursor = conn.cursor()
 
 
 
+
 def creer_table_part2():
     cursor.execute(
         '''
@@ -30,93 +31,94 @@ def creer_table_part2():
 
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab2114_fait_civi_deces(
-        id INTEGER PRIMARY KEY ,
-        direction TEXT,
-        region TEXT,
-        departement TEXT,
-        sous_prefecture TEXT,
-        annee TEXT,
-        faits_civil TEXT,
-        type_de_centre_civil TEXT,
-        dans_les_delais_15_jour INTEGER,
-        hors_delai_annee_cours INTEGER,
-        hors_delai_des_annees_anteri INTEGER,
-        total_faits_deces INTEGER
+        CREATE TABLE IF NOT EXISTS tab2114_fait_civi_deces (
+            id INTEGER PRIMARY KEY,
+            direction TEXT,
+            region TEXT,
+            departement TEXT,
+            sous_prefecture TEXT,
+            annee TEXT,
+            faits_civil TEXT,
+            type_de_centre_civil TEXT,
+            dans_les_delais_15_jour INTEGER,
+            hors_delai_annee_cours INTEGER,
+            hors_delai_des_annees_anteri INTEGER,
+            total_faits_deces INTEGER,
+            UNIQUE(direction, region, departement, sous_prefecture, annee, faits_civil, type_de_centre_civil, 
+                   dans_les_delais_15_jour, hors_delai_annee_cours, hors_delai_des_annees_anteri, total_faits_deces)
         )
         '''
     )
-
 
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab2113_fait_civi_naiss(
-        id INTEGER PRIMARY KEY ,
-        direction TEXT,
-        region TEXT,
-        departement TEXT,
-        sous_prefecture TEXT,
-        annee TEXT,
-        faits_civil TEXT,
-        type_de_centre_civil TEXT,
-        dans_les_delais_3_mois INTEGER,
-        hors_delai_4_12_mois INTEGER,
-        hors_delai_plus_de_12_mois INTEGER,
-        total_faits_naissance INTEGER
+        CREATE TABLE IF NOT EXISTS tab2113_fait_civi_naiss (
+            id INTEGER PRIMARY KEY,
+            direction TEXT,
+            region TEXT,
+            departement TEXT,
+            sous_prefecture TEXT,
+            annee TEXT,
+            faits_civil TEXT,
+            type_de_centre_civil TEXT,
+            dans_les_delais_3_mois INTEGER,
+            hors_delai_4_12_mois INTEGER,
+            hors_delai_plus_de_12_mois INTEGER,
+            total_faits_naissance INTEGER,
+            UNIQUE(direction, region, departement, sous_prefecture, annee, faits_civil, type_de_centre_civil, 
+                   dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance)
         )
         '''
     )
-
 
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab2112_faits_civils(
-        id INTEGER PRIMARY KEY ,
-        direction TEXT,
-        region TEXT,
-        departement TEXT,
-        sous_prefecture TEXT,
-        faits_civil TEXT,
-        type_etat_civil TEXT,
-        annee TEXT,
-        nombre_fait INTEGER
-
+        CREATE TABLE IF NOT EXISTS tab2112_faits_civils (
+            id INTEGER PRIMARY KEY,
+            direction TEXT,
+            region TEXT,
+            departement TEXT,
+            sous_prefecture TEXT,
+            faits_civil TEXT,
+            type_etat_civil TEXT,
+            annee TEXT,
+            nombre_fait INTEGER,
+            UNIQUE(direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait)
         )
         '''
     )
+
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab2111_fait_matr_civils(
-        id INTEGER PRIMARY KEY ,
-        direction TEXT,
-        region TEXT,
-        departement TEXT,
-         annee TEXT,
-        type_centre_civil TEXT,
-        nbre_bien_commun INTEGER,
-        nbre_bien_separe INTEGER
-       
-       
-
+        CREATE TABLE IF NOT EXISTS tab2111_fait_matr_civils (
+            id INTEGER PRIMARY KEY,
+            direction TEXT,
+            region TEXT,
+            departement TEXT,
+            annee TEXT,
+            type_centre_civil TEXT,
+            nbre_bien_commun INTEGER,
+            nbre_bien_separe INTEGER,
+            UNIQUE(direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe)
         )
         '''
     )
-
 
     # Tableau 2.1.10 : Mariages enregistrés selon la nationalité et le type de centre d’état civil par Département de la Région du Poro  en 2019
 
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab2110_maria_centre_civil_dep(
+        CREATE TABLE IF NOT EXISTS tab2110_maria_centre_civil_dep (
             id INTEGER PRIMARY KEY,
             direction TEXT,
             region TEXT,
-            departement TEXT, 
+            departement TEXT,
             annee TEXT,
             centre_etat_civil TEXT,
-           nat_coupl_ivoi INTEGER,
+            nat_coupl_ivoi INTEGER,
             nat_coupl_mixte INTEGER,
-            nat_coupl_etrang INTEGER
+            nat_coupl_etrang INTEGER,
+            UNIQUE(direction, region, departement, annee, centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
         )
         '''
     )
@@ -125,14 +127,15 @@ def creer_table_part2():
 
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab219_maria_regim(
+        CREATE TABLE IF NOT EXISTS tab219_maria_regim (
             id INTEGER PRIMARY KEY,
             direction TEXT,
             region TEXT,
-            departement TEXT, 
+            departement TEXT,
             annee TEXT,
-           reg_mat_bien_com INTEGER,
-            reg_mat_bien_sep INTEGER
+            reg_mat_bien_com INTEGER,
+            reg_mat_bien_sep INTEGER,
+            UNIQUE(direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep)
         )
         '''
     )
@@ -141,15 +144,16 @@ def creer_table_part2():
     # Erreur de nommination de la table
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab218_maria_eta_civ_regim(
+        CREATE TABLE IF NOT EXISTS tab218_maria_eta_civ_regim (
             id INTEGER PRIMARY KEY,
             direction TEXT,
             region TEXT,
-            departement TEXT, 
+            departement TEXT,
             annee TEXT,
-           nat_coupl_ivoi INTEGER,
+            nat_coupl_ivoi INTEGER,
             nat_coupl_mixte INTEGER,
-            nat_coupl_etrang INTEGER
+            nat_coupl_etrang INTEGER,
+            UNIQUE(direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
         )
         '''
     )
@@ -157,7 +161,7 @@ def creer_table_part2():
     # Tableau 2.1.7: Evolution de la population de la région du PORO par département et par sexe sur les 5 dernières années
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab217_evolu_pop_reg_dep(
+        CREATE TABLE IF NOT EXISTS tab217_evolu_pop_reg_dep (
             id INTEGER PRIMARY KEY,
             direction TEXT,
             region TEXT,
@@ -167,7 +171,8 @@ def creer_table_part2():
             hommes INTEGER,
             femmes INTEGER,
             total_sexe INTEGER,
-            densite REAL
+            densite REAL,
+            UNIQUE(direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite)
         )
         '''
     )
@@ -175,7 +180,7 @@ def creer_table_part2():
     # Tableau 2.1.3: Population du département par tranche d'âge selon la sous-préfecture et le sexe
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab213_pop_dep_tranc_s_pref_sex(
+        CREATE TABLE IF NOT EXISTS tab213_pop_dep_tranc_s_pref_sex (
             id INTEGER PRIMARY KEY,
             direction TEXT,
             region TEXT,
@@ -185,7 +190,8 @@ def creer_table_part2():
             tranche_age TEXT,
             hommes INTEGER,
             femmes INTEGER,
-            total_sexe INTEGER
+            total_sexe INTEGER,
+            UNIQUE(direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe)
         )
         '''
     )
@@ -193,7 +199,7 @@ def creer_table_part2():
     # Tableau 2.1.2: Répartition de la population de la région du Poro par grand groupe d’âge selon le sexe
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab212_repa_pop_grou_age(
+        CREATE TABLE IF NOT EXISTS tab212_repa_pop_grou_age (
             id INTEGER PRIMARY KEY,
             direction TEXT,
             region TEXT,
@@ -202,7 +208,8 @@ def creer_table_part2():
             hommes INTEGER,
             femmes INTEGER,
             total_sexe INTEGER,
-            rapport_masculinite REAL
+            rapport_masculinite REAL,
+            UNIQUE(direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite)
         )
         '''
     )
@@ -210,7 +217,7 @@ def creer_table_part2():
     # Tableau 2.1.1: Population de la région du Poro par Département et par sous-préfecture
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tab211_pop_dep_sous_pref_sex(
+        CREATE TABLE IF NOT EXISTS tab211_pop_dep_sous_pref (
             id INTEGER PRIMARY KEY,
             direction TEXT,
             region TEXT,
@@ -220,7 +227,8 @@ def creer_table_part2():
             hommes INTEGER,
             femmes INTEGER,
             total_sexe INTEGER,
-            rapport_masculinite REAL
+            rapport_masculinite INTEGER,
+            UNIQUE(direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite)
         )
         '''
     )
@@ -241,7 +249,7 @@ def enregistrer_tab211_pop_dep_sous_pref_sex(direction, region, annee, departeme
     cursor = conn.cursor()
     cursor.execute(
         '''
-        INSERT INTO tab211_pop_dep_sous_pref_sex (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite)
+        INSERT INTO tab211_pop_dep_sous_pref(direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''',
         (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite)
@@ -253,7 +261,7 @@ def enregistrer_tab211_pop_dep_sous_pref_sex(direction, region, annee, departeme
 def obtenir_tab211_pop_dep_sous_pref_sex():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM tab211_pop_dep_sous_pref_sex')
+    cursor.execute('SELECT * FROM tab211_pop_dep_sous_pref')
     rows = cursor.fetchall()
     df_table = pd.DataFrame(rows, columns=[
         'ID', 'Direction régionale', 'Région', 'Année', 'Département', 'Sous-préfecture', 'Nombre hommes',
@@ -262,6 +270,69 @@ def obtenir_tab211_pop_dep_sous_pref_sex():
     ])
     conn.close()
     return df_table
+
+
+
+def modifier_tab211_pop_dep_sous_pref_sex(id, direction, region, annee, departement, sous_prefecture, hommes, femmes,
+                                          total_sexe, rapport_masculinite):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        UPDATE tab211_pop_dep_sous_pref
+        SET direction=?, region=?, annee=?, departement=?, sous_prefecture=?, hommes=?, femmes=?, total_sexe=?, rapport_masculinite=?
+        WHERE ID=?
+        ''',
+        (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite, id)
+    )
+    conn.commit()
+    conn.close()
+    return True  # Indiquer que la modification s'est déroulée avec succès
+
+
+def supprimer_doublons_tab211_pop_dep_sous_pref_sex():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        # Sélectionner les ID uniques à conserver
+        cursor.execute(
+            '''
+            SELECT MIN(ID)
+            FROM tab211_pop_dep_sous_pref_sex
+            GROUP BY direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite
+            '''
+        )
+        unique_ids = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab211_pop_dep_sous_pref_sex')
+
+        # Réinsérer les lignes uniques
+        for (id,) in unique_ids:
+            cursor.execute(
+                '''
+                INSERT INTO tab211_pop_dep_sous_pref_sex (ID, direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite)
+                SELECT ID, direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite
+                FROM tab211_pop_dep_sous_pref_sex
+                WHERE ID = ?
+                ''',
+                (id,)
+            )
+
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons : {e}")
+        conn.rollback()
+        return False
+    finally:
+        conn.close()
+
+
+# Indiquer que les doublons ont été supprimés avec succès
+
+
 
 
 
@@ -327,25 +398,41 @@ def modifier_tab212_repa_pop_grou_age(id, direction, region, annee, groupe_age, 
 def supprimer_doublons_tab212_repa_pop_grou_age():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
+
     try:
+        # Sélectionner les lignes uniques
         cursor.execute(
             '''
-            DELETE FROM tab212_repa_pop_grou_age
-            WHERE id NOT IN (
-                SELECT MIN(id)
-                FROM tab212_repa_pop_grou_age
-                GROUP BY direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite
-            )
+            SELECT MIN(id)
+            FROM tab212_repa_pop_grou_age
+            GROUP BY direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite
             '''
         )
+        unique_ids = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab212_repa_pop_grou_age')
+
+        # Réinsérer les lignes uniques
+        for (id,) in unique_ids:
+            cursor.execute(
+                '''
+                INSERT INTO tab212_repa_pop_grou_age (id, direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite)
+                SELECT id, direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite
+                FROM tab212_repa_pop_grou_age
+                WHERE id = ?
+                ''',
+                (id,)
+            )
+
         conn.commit()
-        conn.close()
         return True
-    except Exception as e:
+    except sqlite3.Error as e:
         print(f"Erreur lors de la suppression des doublons : {e}")
         conn.rollback()
-        conn.close()
         return False
+    finally:
+        conn.close()
 
 
 
@@ -492,16 +579,27 @@ def supprimer_doublons_tab217_evolu_pop_reg_dep():
     cursor = conn.cursor()
 
     try:
+        # Sélectionner les lignes uniques
         cursor.execute(
             '''
-            DELETE FROM tab217_evolu_pop_reg_dep
-            WHERE rowid NOT IN (
-                SELECT MIN(rowid)
-                FROM tab217_evolu_pop_reg_dep
-                GROUP BY direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite
-            )
+            SELECT DISTINCT direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite
+            FROM tab217_evolu_pop_reg_dep
             '''
         )
+        unique_rows = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab217_evolu_pop_reg_dep')
+
+        # Réinsérer les lignes uniques
+        cursor.executemany(
+            '''
+            INSERT INTO tab217_evolu_pop_reg_dep (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''',
+            unique_rows
+        )
+
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -509,6 +607,7 @@ def supprimer_doublons_tab217_evolu_pop_reg_dep():
         return False
     finally:
         conn.close()
+
 
 
 
@@ -569,16 +668,27 @@ def supprimer_doublons_tab218_maria_eta_civ_regim():
     cursor = conn.cursor()
 
     try:
+        # Sélectionner les lignes uniques
         cursor.execute(
             '''
-            DELETE FROM tab218_maria_eta_civ_regim
-            WHERE rowid NOT IN (
-                SELECT MIN(rowid)
-                FROM tab218_maria_eta_civ_regim
-                GROUP BY direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang
-            )
+            SELECT DISTINCT direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang
+            FROM tab218_maria_eta_civ_regim
             '''
         )
+        unique_rows = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab218_maria_eta_civ_regim')
+
+        # Réinsérer les lignes uniques
+        cursor.executemany(
+            '''
+            INSERT INTO tab218_maria_eta_civ_regim (direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''',
+            unique_rows
+        )
+
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -586,6 +696,7 @@ def supprimer_doublons_tab218_maria_eta_civ_regim():
         return False
     finally:
         conn.close()
+
 
 
 
@@ -654,16 +765,27 @@ def supprimer_doublons_tab219_maria_regim():
     cursor = conn.cursor()
 
     try:
+        # Sélectionner les lignes uniques
         cursor.execute(
             '''
-            DELETE FROM tab219_maria_regim
-            WHERE rowid NOT IN (
-                SELECT MIN(rowid)
-                FROM tab219_maria_regim
-                GROUP BY direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep
-            )
+            SELECT DISTINCT direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep
+            FROM tab219_maria_regim
             '''
         )
+        unique_rows = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab219_maria_regim')
+
+        # Réinsérer les lignes uniques
+        cursor.executemany(
+            '''
+            INSERT INTO tab219_maria_regim (direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ''',
+            unique_rows
+        )
+
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -671,6 +793,7 @@ def supprimer_doublons_tab219_maria_regim():
         return False
     finally:
         conn.close()
+
 
 
 
@@ -728,16 +851,28 @@ def supprimer_doublons_tab2110_maria_centre_civil_dep():
     cursor = conn.cursor()
 
     try:
+        # Sélectionner les lignes uniques
         cursor.execute(
             '''
-            DELETE FROM tab2110_maria_centre_civil_dep
-            WHERE rowid NOT IN (
-                SELECT MIN(rowid)
-                FROM tab2110_maria_centre_civil_dep
-                GROUP BY direction, region, departement, annee, centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang
-            )
+            SELECT DISTINCT direction, region, departement, annee, centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang
+            FROM tab2110_maria_centre_civil_dep
             '''
         )
+        unique_rows = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab2110_maria_centre_civil_dep')
+
+        # Réinsérer les lignes uniques
+        cursor.executemany(
+            '''
+            INSERT INTO tab2110_maria_centre_civil_dep (direction, region, departement, annee, centre_etat_civil, 
+                                                        nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''',
+            unique_rows
+        )
+
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -745,6 +880,7 @@ def supprimer_doublons_tab2110_maria_centre_civil_dep():
         return False
     finally:
         conn.close()
+
 
 
 
@@ -810,16 +946,28 @@ def supprimer_doublons_tab2111_fait_matr_civils():
     cursor = conn.cursor()
 
     try:
+        # Sélectionner les lignes uniques
         cursor.execute(
             '''
-            DELETE FROM tab2111_fait_matr_civils
-            WHERE rowid NOT IN (
-                SELECT MIN(rowid)
-                FROM tab2111_fait_matr_civils
-                GROUP BY direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe
-            )
+            SELECT DISTINCT direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe
+            FROM tab2111_fait_matr_civils
             '''
         )
+        unique_rows = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab2111_fait_matr_civils')
+
+        # Réinsérer les lignes uniques
+        cursor.executemany(
+            '''
+            INSERT INTO tab2111_fait_matr_civils (direction, region, departement, annee, type_centre_civil, 
+                                                  nbre_bien_commun, nbre_bien_separe)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''',
+            unique_rows
+        )
+
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -827,6 +975,7 @@ def supprimer_doublons_tab2111_fait_matr_civils():
         return False
     finally:
         conn.close()
+
 
 
 
@@ -887,16 +1036,28 @@ def supprimer_doublons_tab2112_fait():
     cursor = conn.cursor()
 
     try:
+        # Sélectionner les lignes uniques
         cursor.execute(
             '''
-            DELETE FROM tab2112_faits_civils
-            WHERE rowid NOT IN (
-                SELECT MIN(rowid)
-                FROM tab2112_faits_civils
-                GROUP BY direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait
-            )
+            SELECT DISTINCT direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait
+            FROM tab2112_faits_civils
             '''
         )
+        unique_rows = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab2112_faits_civils')
+
+        # Réinsérer les lignes uniques
+        cursor.executemany(
+            '''
+            INSERT INTO tab2112_faits_civils (direction, region, departement, sous_prefecture, faits_civil, type_etat_civil,
+                                              annee, nombre_fait)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''',
+            unique_rows
+        )
+
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -904,6 +1065,7 @@ def supprimer_doublons_tab2112_fait():
         return False
     finally:
         conn.close()
+
 
 
 
@@ -977,18 +1139,30 @@ def supprimer_doublons_tab2113_fait_civi_naiss():
     cursor = conn.cursor()
 
     try:
+        # Sélectionner les lignes uniques
         cursor.execute(
             '''
-            DELETE FROM tab2113_fait_civi_naiss
-            WHERE rowid NOT IN (
-                SELECT MIN(rowid)
-                FROM tab2113_fait_civi_naiss
-                GROUP BY direction, region, departement, sous_prefecture, annee, 
-                         faits_civil, type_de_centre_civil, dans_les_delais_3_mois, 
-                         hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance
-            )
+            SELECT DISTINCT direction, region, departement, sous_prefecture, annee, faits_civil, type_de_centre_civil,
+                            dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance
+            FROM tab2113_fait_civi_naiss
             '''
         )
+        unique_rows = cursor.fetchall()
+
+        # Supprimer toutes les lignes de la table
+        cursor.execute('DELETE FROM tab2113_fait_civi_naiss')
+
+        # Réinsérer les lignes uniques
+        cursor.executemany(
+            '''
+            INSERT INTO tab2113_fait_civi_naiss (direction, region, departement, sous_prefecture, annee, faits_civil,
+                                                 type_de_centre_civil, dans_les_delais_3_mois, hors_delai_4_12_mois,
+                                                 hors_delai_plus_de_12_mois, total_faits_naissance)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''',
+            unique_rows
+        )
+
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -996,6 +1170,7 @@ def supprimer_doublons_tab2113_fait_civi_naiss():
         return False
     finally:
         conn.close()
+
 
 
 
