@@ -573,6 +573,7 @@ def page_tab219_mariage_matrimon():
         ]
 
         # Afficher les données de la table avec filtres
+        st.write("NB: Un double clique permet de supprimer les doublons")
         if st.button('Recherche données de la table', key="tab219AAB"):
 
             data_p2.supprimer_doublons_tab219_maria_regim()
@@ -871,6 +872,7 @@ def page_tab2112_fait_civil():
         ]
 
     # Afficher les données de la table avec filtres
+        st.write("NB: Un double clique permet de supprimer les doublons")
         if st.button('Recherche de  données de la table', key="tab2112AAB"):
             data_p2.supprimer_doublons_tab2112_fait()
             for filtered_df in filtered_dfs:
@@ -965,6 +967,14 @@ def page_tab2113_naiss_enreg_reg_dep():
             df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna()) & (
                 df['Sous-préfecture'].isna())]
         ]
+
+        st.write("NB: Un double clique permet de supprimer les doublons")
+        if st.button('Recherche de  données de la table', key="tab2112AAB"):
+            data_p2.supprimer_doublons_tab2113_fait_civi_naiss()
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
 
     if st.checkbox("Modifier une ligne existante","tab2113modiA"):
         selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
