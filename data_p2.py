@@ -235,6 +235,205 @@ creer_table_part2()
 
 # Les fonctions de la sections parties 2
 
+def enregistrer_tab211_pop_dep_sous_pref_sex(direction, region, annee, departement, sous_prefecture, hommes, femmes,
+                                             total_sexe, rapport_masculinite):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        INSERT INTO tab211_pop_dep_sous_pref_sex (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''',
+        (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite)
+    )
+    conn.commit()
+    conn.close()
+
+
+def obtenir_tab211_pop_dep_sous_pref_sex():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab211_pop_dep_sous_pref_sex')
+    rows = cursor.fetchall()
+    df_table = pd.DataFrame(rows, columns=[
+        'ID', 'Direction régionale', 'Région', 'Année', 'Département', 'Sous-préfecture', 'Nombre hommes',
+        ' Nombre de femmes', 'Total sexe',
+        'rapport_masculinite'
+    ])
+    conn.close()
+    return df_table
+
+
+
+
+
+
+
+
+
+
+
+
+def enregistrer_tab212_repa_pop_grou_age(direction, region, annee, groupe_age, hommes, femmes, total_sexe,
+                                         rapport_masculinite):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        INSERT INTO tab212_repa_pop_grou_age (direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''',
+        (direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite)
+    )
+    conn.commit()
+    conn.close()
+
+
+def obtenir_tab212_repa_pop_grou_age():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab212_repa_pop_grou_age')
+    rows = cursor.fetchall()
+    df_table = pd.DataFrame(rows, columns=[
+        "ID", "Direction régionale", "Région", "Année", "Tranche d'âge", "Nombre d'hommes", " Nombre de femmes",
+        "Total sexe",
+        "Rapport masculinité"
+    ])
+    conn.close()
+    return df_table
+
+
+def modifier_tab212_repa_pop_grou_age(id, direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab212_repa_pop_grou_age
+            SET direction = ?, region = ?, annee = ?, groupe_age = ?, hommes = ?, femmes = ?, total_sexe = ?, rapport_masculinite = ?
+            WHERE id = ?
+            ''',
+            (direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite, id)
+        )
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Erreur lors de la modification : {e}")
+        conn.rollback()
+        conn.close()
+        return False
+
+def supprimer_doublons_tab212_repa_pop_grou_age():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            '''
+            DELETE FROM tab212_repa_pop_grou_age
+            WHERE id NOT IN (
+                SELECT MIN(id)
+                FROM tab212_repa_pop_grou_age
+                GROUP BY direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite
+            )
+            '''
+        )
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Erreur lors de la suppression des doublons : {e}")
+        conn.rollback()
+        conn.close()
+        return False
+
+
+
+
+
+
+
+
+def enregistrer_tab213_pop_dep_tranc_s_pref_sex(direction, region, annee, departement, sous_prefecture, tranche_age,
+                                                hommes, femmes, total_sexe):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        INSERT INTO tab213_pop_dep_tranc_s_pref_sex (direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''',
+        (direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe)
+    )
+    conn.commit()
+    conn.close()
+
+
+
+
+def obtenir_tab213_pop_dep_tranc_s_pref_sex():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM tab213_pop_dep_tranc_s_pref_sex')
+    rows = cursor.fetchall()
+    df = pd.DataFrame(rows, columns=[
+        'ID', 'Direction', 'Région', 'Année', 'Département', 'Sous-préfecture', 'Tranche âge',
+        'Hommes', 'Femmes', 'Total sexe'
+    ])
+    conn.close()
+    return df
+
+
+def modifier_tab213_pop_dep_tranc_s_pref_sex(id, direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab213_pop_dep_tranc_s_pref_sex
+            SET direction = ?, region = ?, annee = ?, departement = ?, sous_prefecture = ?, tranche_age = ?, hommes = ?, femmes = ?, total_sexe = ?
+            WHERE id = ?
+            ''',
+            (direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+def supprimer_doublons_tab213_pop_dep_tranc_s_pref_sex():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            DELETE FROM tab213_pop_dep_tranc_s_pref_sex
+            WHERE rowid NOT IN (
+                SELECT MIN(rowid)
+                FROM tab213_pop_dep_tranc_s_pref_sex
+                GROUP BY direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe
+            )
+            '''
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+
+
+
+
 
 
 
@@ -267,96 +466,55 @@ def obtenir_tab217_evolu_pop_reg_dep():
     return df
 
 
-
-
-
-
-
-def enregistrer_tab213_pop_dep_tranc_s_pref_sex(direction, region, annee, departement, sous_prefecture, tranche_age,
-                                                hommes, femmes, total_sexe):
+def modifier_tab217_evolu_pop_reg_dep(id, direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute(
-        '''
-        INSERT INTO tab213_pop_dep_tranc_s_pref_sex (direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''',
-        (direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe)
-    )
-    conn.commit()
-    conn.close()
 
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab217_evolu_pop_reg_dep
+            SET direction = ?, region = ?, annee = ?, departement = ?, sous_prefecture = ?, hommes = ?, femmes = ?, total_sexe = ?, densite = ?
+            WHERE id = ?
+            ''',
+            (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
 
-def obtenir_tab213_pop_dep_tranc_s_pref_sex():
+def supprimer_doublons_tab217_evolu_pop_reg_dep():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM tab213_pop_dep_tranc_s_pref_sex')
-    rows = cursor.fetchall()
-    df = pd.DataFrame(rows, columns=[
-        'ID', 'Direction', 'Région', 'Département', 'Sous-préfecture', 'Année', 'Fait civil',
-        'Type de centre civil', 'Dans les délais (0-3 mois)', 'Hors délai (4-12 mois)',
-        'Hors délai (>12 mois)', 'Total faits naissance'
-    ])
-    conn.close()
-    return df
+
+    try:
+        cursor.execute(
+            '''
+            DELETE FROM tab217_evolu_pop_reg_dep
+            WHERE rowid NOT IN (
+                SELECT MIN(rowid)
+                FROM tab217_evolu_pop_reg_dep
+                GROUP BY direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, densite
+            )
+            '''
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
 
 
-def enregistrer_tab212_repa_pop_grou_age(direction, region, annee, groupe_age, hommes, femmes, total_sexe,
-                                         rapport_masculinite):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute(
-        '''
-        INSERT INTO tab212_repa_pop_grou_age (direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''',
-        (direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite)
-    )
-    conn.commit()
-    conn.close()
 
 
-def obtenir_tab212_repa_pop_grou_age():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM tab212_repa_pop_grou_age')
-    rows = cursor.fetchall()
-    df_table = pd.DataFrame(rows, columns=[
-        "ID", "Direction régionale", "Région", "Année", "Tranche d'âge", "Nombre d'hommes", " Nombre de femmes",
-        "Total sexe",
-        "Rapport masculinité"
-    ])
-    conn.close()
-    return df_table
 
 
-def enregistrer_tab211_pop_dep_sous_pref_sex(direction, region, annee, departement, sous_prefecture, hommes, femmes,
-                                             total_sexe, rapport_masculinite):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute(
-        '''
-        INSERT INTO tab211_pop_dep_sous_pref_sex (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''',
-        (direction, region, annee, departement, sous_prefecture, hommes, femmes, total_sexe, rapport_masculinite)
-    )
-    conn.commit()
-    conn.close()
-
-
-def obtenir_tab211_pop_dep_sous_pref_sex():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM tab211_pop_dep_sous_pref_sex')
-    rows = cursor.fetchall()
-    df_table = pd.DataFrame(rows, columns=[
-        'ID', 'Direction régionale', 'Région', 'Année', 'Département', 'Sous-préfecture', 'Nombre hommes',
-        ' Nombre de femmes', 'Total sexe',
-        'rapport_masculinite'
-    ])
-    conn.close()
-    return df_table
 
 
 
@@ -383,36 +541,64 @@ def obtenir_tab218_maria_eta_civ_regim():
     return df
 
 
-# Fonction d'enregistrement pour la table tab219_maria_eta_civ_regim
-def enregistrer_tab219_maria_eta_civ_regim(direction, region, annee, departement, nat_coupl_ivoi, nat_coupl_mixte,
-                                           nat_coupl_etrang):
+def modifier_tab218_maria_eta_civ_regim(id, direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO tab219_maria_eta_civ_regim(direction, region, annee, departement, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
-        VALUES(?,?,?,?,?,?,?)
-    ''', (direction, region, annee, departement, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang))
-    conn.commit()
-    conn.close()
+
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab218_maria_eta_civ_regim
+            SET direction = ?, region = ?, departement = ?, annee = ?, nat_coupl_ivoi = ?, nat_coupl_mixte = ?, nat_coupl_etrang = ?
+            WHERE id = ?
+            ''',
+            (direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
 
 
-# Fonction pour obtenir les données de la table tab219_maria_eta_civ_regim
-def obtenir_tab219_maria_eta_civ_regim():
+
+def supprimer_doublons_tab218_maria_eta_civ_regim():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM tab219_maria_eta_civ_regim')
-    data = cursor.fetchall()
-    df = pd.DataFrame(data, columns=["ID", "Direction", "Région", "Année", "Département", "Nat Coupl Ivoi",
-                                     " Couple mixte de nationalité ", "Couple de nationalité etrangere"])
-    df = df.astype({
-        'Couple de nationalité ivoirienne': 'int',
-        'Couple mixte de nationalité': 'int',
-        'Couple de nationalité etrangere': 'int'
-        # Ajoutez des conversions pour d'autres colonnes si nécessaire
-    })
 
-    conn.close()
-    return df
+    try:
+        cursor.execute(
+            '''
+            DELETE FROM tab218_maria_eta_civ_regim
+            WHERE rowid NOT IN (
+                SELECT MIN(rowid)
+                FROM tab218_maria_eta_civ_regim
+                GROUP BY direction, region, departement, annee, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang
+            )
+            '''
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def enregistrer_tab219_maria_regim(direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep):
@@ -442,6 +628,49 @@ def obtenir_tab219_maria_regim():
 
     conn.close()
     return df
+def modifier_tab219_maria_regim(id, direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab219_maria_regim
+            SET direction = ?, region = ?, departement = ?, annee = ?, reg_mat_bien_com = ?, reg_mat_bien_sep = ?
+            WHERE id = ?
+            ''',
+            (direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
+
+def supprimer_doublons_tab219_maria_regim():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            DELETE FROM tab219_maria_regim
+            WHERE rowid NOT IN (
+                SELECT MIN(rowid)
+                FROM tab219_maria_regim
+                GROUP BY direction, region, departement, annee, reg_mat_bien_com, reg_mat_bien_sep
+            )
+            '''
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
 
 
 
@@ -473,6 +702,62 @@ def obtenir_tab2110_maria_centre_civil_dep():
     conn.close()
     return df
 
+def modifier_tab2110_maria_centre_civil_dep(id, direction, region, departement, annee, centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab2110_maria_centre_civil_dep
+            SET direction = ?, region = ?, departement = ?, annee = ?, centre_etat_civil = ?, nat_coupl_ivoi = ?, nat_coupl_mixte = ?, nat_coupl_etrang = ?
+            WHERE id = ?
+            ''',
+            (direction, region, departement, annee, centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
+
+def supprimer_doublons_tab2110_maria_centre_civil_dep():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            DELETE FROM tab2110_maria_centre_civil_dep
+            WHERE rowid NOT IN (
+                SELECT MIN(rowid)
+                FROM tab2110_maria_centre_civil_dep
+                GROUP BY direction, region, departement, annee, centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang
+            )
+            '''
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def enregistrer_tab2111_fait_matr_civils(direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe):
     conn = sqlite3.connect(DATABASE)
@@ -499,6 +784,61 @@ def obtenir_tab2111_fait_matr_civils():
     conn.close()
     return df
 
+def modifier_tab2111_fait_matr_civils(id, direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab2111_fait_matr_civils
+            SET direction = ?, region = ?, departement = ?, annee = ?, type_centre_civil = ?, nbre_bien_commun = ?, nbre_bien_separe = ?
+            WHERE id = ?
+            ''',
+            (direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
+
+def supprimer_doublons_tab2111_fait_matr_civils():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            DELETE FROM tab2111_fait_matr_civils
+            WHERE rowid NOT IN (
+                SELECT MIN(rowid)
+                FROM tab2111_fait_matr_civils
+                GROUP BY direction, region, departement, annee, type_centre_civil, nbre_bien_commun, nbre_bien_separe
+            )
+            '''
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def enregistrement_tab2112_fait(direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait):
@@ -519,6 +859,59 @@ def obtenir_tab2112_fait():
     data = cursor.fetchall()
     df_data = pd.DataFrame(data, columns=['ID', 'Direction', 'Region', 'Departement', 'Sous-prefecture', 'Faits Civil', 'Type Etat Civil', 'Annee', 'Nombre Fait'])
     return df_data
+
+def modifier_tab2112_fait(id, direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait):
+    conn = sqlite3.connect('comptes_regionaux.db')
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab2112_faits_civils
+            SET direction = ?, region = ?, departement = ?, sous_prefecture = ?, faits_civil = ?, type_etat_civil = ?, annee = ?, nombre_fait = ?
+            WHERE id = ?
+            ''',
+            (direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+def supprimer_doublons_tab2112_fait():
+    conn = sqlite3.connect('comptes_regionaux.db')
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            DELETE FROM tab2112_faits_civils
+            WHERE rowid NOT IN (
+                SELECT MIN(rowid)
+                FROM tab2112_faits_civils
+                GROUP BY direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait
+            )
+            '''
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+
+
+
+
+
+
 
 
 def enregistrer_tab2113_fait_civi_naiss(direction, region, departement, sous_prefecture,annee, faits_civil, type_de_centre_civil,
@@ -553,6 +946,66 @@ def obtenir_tab2113_fait_civi_naiss():
 
     conn.close()
     return df
+
+
+def modifier_tab2113_fait_civi_naiss(id, direction, region, departement, sous_prefecture, annee, faits_civil, type_de_centre_civil,
+                                     dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab2113_fait_civi_naiss
+            SET direction = ?, region = ?, departement = ?, sous_prefecture = ?, annee = ?, faits_civil = ?, type_de_centre_civil = ?,
+                dans_les_delais_3_mois = ?, hors_delai_4_12_mois = ?, hors_delai_plus_de_12_mois = ?, total_faits_naissance = ?
+            WHERE id = ?
+            ''',
+            (direction, region, departement, sous_prefecture, annee, faits_civil, type_de_centre_civil,
+             dans_les_delais_3_mois, hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
+
+def supprimer_doublons_tab2113_fait_civi_naiss():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            DELETE FROM tab2113_fait_civi_naiss
+            WHERE rowid NOT IN (
+                SELECT MIN(rowid)
+                FROM tab2113_fait_civi_naiss
+                GROUP BY direction, region, departement, sous_prefecture, annee, 
+                         faits_civil, type_de_centre_civil, dans_les_delais_3_mois, 
+                         hors_delai_4_12_mois, hors_delai_plus_de_12_mois, total_faits_naissance
+            )
+            '''
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la suppression des doublons: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -716,6 +1169,38 @@ def obtenir_tab2115_fait_naiss_deces():
                                      "Décès enregistrés dans Centre secondaire","Décès total  enregistré"])
     conn.close()
     return df
+
+
+
+def modifier_tab2115_fait_naiss_deces(id, direction, region, departement, sous_prefecture, annee,
+                                      nbre_naiss_centr_princ, nbre_naiss_centr_second, nbre_total_naiss,
+                                      nbre_deces_centr_princ, nbre_deces_centr_second, nbre_total_deces):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''
+            UPDATE tab2115_fait_naiss_deces
+            SET direction = ?, region = ?, departement = ?, sous_prefecture = ?, annee = ?, 
+                nbre_naiss_centr_princ = ?, nbre_naiss_centr_second = ?, nbre_total_naiss = ?, 
+                nbre_deces_centr_princ = ?, nbre_deces_centr_second = ?, nbre_total_deces = ?
+            WHERE id = ?
+            ''',
+            (direction, region, departement, sous_prefecture, annee, nbre_naiss_centr_princ,
+             nbre_naiss_centr_second, nbre_total_naiss, nbre_deces_centr_princ, nbre_deces_centr_second,
+             nbre_total_deces, id)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Erreur lors de la modification de l'enregistrement: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+
 
 def supprimer_doublons_tab2115_fait_naiss_deces():
     conn = sqlite3.connect(DATABASE)

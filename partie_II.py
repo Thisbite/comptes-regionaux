@@ -4,18 +4,31 @@ import pandas as pd
 
 
 def partie_II_annuaire():
+    st.write("******************************************************************")
     page_tab211_pop_region_depart()
+    st.write("------------------------------------------------------------------")
     page_tab212_repart_pop_group_age()
+    st.write("------------------------------------------------------------------")
     page_tab_213_pop_depart_sous()
+    st.write("------------------------------------------------------------------")
     page_tab217_evolution_pop()
-
+    st.write("------------------------------------------------------------------")
+    page_tab218_maria_eta_civ_regim()
+    st.write("------------------------------------------------------------------")
     page_tab219_mariage_matrimon()
+    st.write("------------------------------------------------------------------")
     page_tab2110_mariage_civil()
+    st.write("------------------------------------------------------------------")
     page_tab2111_fait_matr_civils()
+    st.write("------------------------------------------------------------------")
     page_tab2112_fait_civil()
+    st.write("------------------------------------------------------------------")
     page_tab2113_naiss_enreg_reg_dep()
+    st.write("------------------------------------------------------------------")
     page_tab2114_fait_civi_deces()
+    st.write("------------------------------------------------------------------")
     page_tab2115_fait_naiss_deces()
+    st.write("******************************************************************")
     return
 
 
@@ -66,7 +79,7 @@ def page_tab211_pop_region_depart():
 
 
 def page_tab212_repart_pop_group_age():
-    st.write("Tableau 2.1.2: Répartition  de la population de la région  du Poro par grand  groupe d’âge selon le sexe")
+    st.write("Tableau 2.1.2: Répartition de la population de la région du Poro par grand groupe d’âge selon le sexe")
 
     # Charger le fichier Excel
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab212_repa_pop_grou_age")
@@ -82,13 +95,11 @@ def page_tab212_repart_pop_group_age():
         # Lire la feuille choisie
         df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
 
-
         # Afficher les données du fichier
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "annee", "groupe_age", "hommes", "femmes", "total_sexe",
-                            "rapport_masculinite"]
+        expected_columns = ["direction", "region", "annee", "groupe_age", "hommes", "femmes", "total_sexe", "rapport_masculinite"]
 
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
@@ -100,28 +111,71 @@ def page_tab212_repart_pop_group_age():
                     )
                 st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    if st.button('Afficher les données de la table',key="tab212AA"):
-        rows = data_p2.obtenir_tab212_repa_pop_grou_age()
+    df = data_p2.obtenir_tab212_repa_pop_grou_age()
 
-        st.write('Données de Population de la région , par Département et par sous-préfecture')
-        st.dataframe(rows)
+    # Obtenir des données avec des sélecteurs
+    if st.checkbox("Obtenir des données", key="tab212obtenir"):
+        # Ajout des sélecteurs pour l'année et le groupe d'âge
+        annees = df['Année'].unique()
+        groupes_age = df["Tranche d'âge"].unique()
+        regions=df["Région"].unique()
 
+
+        selected_annee = st.selectbox("Choisir l'année", annees, key="tab212annee")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab212AZA")
+        selected_groupe_age = st.selectbox("Choisir le groupe d'âge", groupes_age, key="tab212groupeage")
+
+
+        # Filtrer les données en fonction des sélections
+        filtered_df = df[(df['Année'] == selected_annee) & (df['Tranche d\'âge'] == selected_groupe_age)&(df["Région"]==selected_region)]
+
+        st.write("NB: Un double clique permet de supprimer les doublons")
+        if st.button('Afficher les données de la table', key="tab212AAB"):
+            data_p2.supprimer_doublons_tab212_repa_pop_grou_age()
+            st.dataframe(filtered_df)
+
+    # Sélection d'une ligne pour modification
+    if st.checkbox("Modifier une ligne existante", key="tab212modiA"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'], key="tab212sel")
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction régionale'])
+            region = st.text_input("Région", selected_row['Région'])
+            annee = st.text_input("Année", selected_row['Année'])
+            groupe_age = st.text_input("Groupe d'âge", selected_row["Tranche d'âge"])
+            hommes = st.text_input("Hommes", selected_row["Nombre d'hommes"])
+            femmes = st.text_input("Femmes", selected_row[" Nombre de femmes"])
+            total_sexe = st.text_input("Total sexe", selected_row["Total sexe"])
+            rapport_masculinite = st.text_input("Rapport masculinité", selected_row["Rapport masculinité"])
+
+            if st.button("Modifier la ligne", key="tab212modi"):
+                success = data_p2.modifier_tab212_repa_pop_grou_age(
+                    selected_id, direction, region, annee, groupe_age, hommes, femmes, total_sexe, rapport_masculinite
+                )
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
 
     return
 
 
 
+
+
+
 def page_tab_213_pop_depart_sous():
-    st.write("Tableau 2.1.3: Population du département  par tranche d'âge selon la sous-préfecture et le sexe")
-    st.write("Les tableaux tab213 jusqu'à tab216 sont contenus dans tab213. Ce sont des données de population désagrégé par sous-préfecture")
+    st.write("Tableau 2.1.3: Population du département par tranche d'âge selon la sous-préfecture et le sexe")
+    st.write("Les tableaux tab213 jusqu'à tab216 sont contenus dans tab213. Ce sont des données de population désagrégées par sous-préfecture")
+
     # Charger le fichier Excel
     uploaded_file = st.file_uploader("Importer les données Excel", type=["xlsx"], key="tab213_pop_dep_tranc_s_pref_sex")
 
     if uploaded_file is not None:
-
         # Lire le fichier Excel et obtenir les noms des feuilles
         excel_file = pd.ExcelFile(uploaded_file)
         sheet_names = excel_file.sheet_names
@@ -136,8 +190,7 @@ def page_tab_213_pop_depart_sous():
         st.dataframe(df)
 
         # Vérifier les colonnes du fichier
-        expected_columns = ["direction", "region", "annee", "departement", "sous_prefecture", "tranche_age", "hommes",
-                            "femmes", "total_sexe"]
+        expected_columns = ["direction", "region", "annee", "departement", "sous_prefecture", "tranche_age", "hommes", "femmes", "total_sexe"]
 
         if all(column in df.columns for column in expected_columns):
             # Bouton pour enregistrer les données dans la base de données
@@ -149,17 +202,64 @@ def page_tab_213_pop_depart_sous():
                     )
                 st.success("Les données du fichier ont été enregistrées avec succès!")
         else:
-            st.error(
-                "Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
+            st.error("Les colonnes du fichier ne correspondent pas aux colonnes attendues. Veuillez vérifier votre fichier.")
 
-    if st.button('Afficher les données de la table',key="tab213_pop"):
-        rows = data_p2.obtenir_tab211_pop_dep_sous_pref_sex()
+    df = data_p2.obtenir_tab213_pop_dep_tranc_s_pref_sex()
 
-        st.write('Données de Population de la région , par Département et par sous-préfecture')
-        st.dataframe(rows)
+    # Obtenir des données avec des sélecteurs
+    if st.checkbox("Obtenir des données", key="tab213obtenir"):
+        # Ajout des sélecteurs pour l'année, la région, le département et la sous-préfecture
+        annees = df['Année'].unique()
+        regions = df['Région'].unique()
+        departements = df['Département'].unique()
+        sous_prefectures = df['Sous-préfecture'].unique()
+
+        selected_annee = st.selectbox("Choisir l'année", annees, key="tab213annee")
+        selected_region = st.selectbox("Choisir la région", regions, key="tab213region")
+        selected_dep = st.selectbox("Choisir le département", departements, key="tab213departement")
+        selected_sous = st.selectbox("Choisir la sous-préfecture", sous_prefectures, key="tab213sousprefecture")
+
+        # Filtrer les données en fonction des sélections
+        filtered_dfs = [
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'] == selected_dep) & (df['Sous-préfecture'] == selected_sous)],
+
+            df[(df['Année'] == selected_annee) & (df['Région'] == selected_region) & (df['Département'].isna()) & (df['Sous-préfecture'] == selected_sous)]
+        ]
+
+        st.write("NB: Un double clique permet de supprimer les doublons")
+        if st.button('Recherche de données de la table', key="tab213AAB"):
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
+
+    # Sélection d'une ligne pour modification
+    if st.checkbox("Modifier une ligne existante", key="tab213modiA"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'], key="tab213sel")
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['direction'])
+            region = st.text_input("Région", selected_row['region'])
+            annee = st.number_input("Année", selected_row['annee'])
+            departement = st.text_input("Département", selected_row['departement'])
+            sous_prefecture = st.text_input("Sous-préfecture", selected_row['sous_prefecture'])
+            tranche_age = st.text_input("Tranche d'âge", selected_row['tranche_age'])
+            hommes = st.text_input("Hommes", selected_row['hommes'])
+            femmes = st.text_input("Femmes", selected_row['femmes'])
+            total_sexe = st.text_input("Total sexe", selected_row['total_sexe'])
+
+            if st.button("Modifier la ligne", key="tab213modi"):
+                success = data_p2.modifier_tab213_pop_dep_tranc_s_pref_sex(
+                    selected_id, direction, region, annee, departement, sous_prefecture, tranche_age, hommes, femmes, total_sexe
+                )
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
 
     return
-
 
 '''
 Les tableaux tab213 jusqu'à tab216 sont contenus dans tab213. Ce sont des données de population désagrégé par sous-préfecture
@@ -218,12 +318,38 @@ def page_tab217_evolution_pop():
             df[(df['Année'] == selected_annee)  & (df['Région'] == selected_region) & (df['Département'].isna())]
         ]
 
-        # Afficher les données de la table avec filtres
+        st.write("NB: Un double clique permet de supprimer les doublons")
         if st.button('Afficher les données de la table', key="tab217AAB"):
+            data_p2.supprimer_doublons_tab217_evolu_pop_reg_dep()
             for filtered_df in filtered_dfs:
                 if not filtered_df.empty:
                     st.dataframe(filtered_df)
                     break
+
+    if st.checkbox("Modifier une ligne existante",key="tab217modiA"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Région", selected_row['Région'])
+            annee = st.number_input("Année", selected_row['Année'])
+            departement = st.text_input("Département", selected_row['Département'])
+            sous_prefecture = st.text_input("Sous-préfecture", selected_row['Sous-prefecture'])
+            hommes = st.text_input("Hommes", selected_row['Hommes'])
+            femmes = st.text_input("Femmes", selected_row['Femmes'])
+            total_sexe = st.text_input("Total sexe", selected_row['Total sexe'])
+            densite = st.text_input("Densité", selected_row['Densité'])
+
+            if st.button("Modifier la ligne",key="tab217modi"):
+                success = data_p2.modifier_tab217_evolu_pop_reg_dep(selected_id, direction, region, annee, departement,
+                                                            sous_prefecture, hommes, femmes, total_sexe, densite)
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
+
 
     return
 
@@ -280,11 +406,35 @@ def page_tab218_maria_eta_civ_regim():
         ]
 
         # Afficher les données de la table avec filtres
-        if st.button('Afficher les données de la table', key="tab218AAB"):
+        st.write("Un double clique permet de supprimer les doublons")
+        if st.button('Recherche de données de la table', key="tab218AAB"):
+            data_p2.supprimer_doublons_tab218_maria_eta_civ_regim()
             for filtered_df in filtered_dfs:
                 if not filtered_df.empty:
                     st.dataframe(filtered_df)
                     break
+
+    if st.checkbox("Modifier une ligne existante",key="tab218modi"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Région", selected_row['Région'])
+            departement = st.text_input("Département", selected_row['Département'])
+            annee = st.number_input("Année", selected_row['Année'])
+            nat_coupl_ivoi = st.text_input("Couple ivoirien", selected_row['Couple ivoirien'])
+            nat_coupl_mixte = st.text_input("Couple mixte", selected_row['Couple mixte'])
+            nat_coupl_etrang = st.text_input("Couple étranger", selected_row['Couple étranger'])
+
+            if st.button("Modifier la ligne"):
+                success = data_p2.modifier_tab218_maria_eta_civ_regim(selected_id, direction, region, departement, annee,
+                                                              nat_coupl_ivoi, nat_coupl_mixte, nat_coupl_etrang)
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
 
     return
 
@@ -349,11 +499,36 @@ def page_tab219_mariage_matrimon():
         ]
 
         # Afficher les données de la table avec filtres
-        if st.button('Afficher les données de la table', key="tab219AAB"):
+        if st.button('Recherche données de la table', key="tab219AAB"):
+
+            data_p2.supprimer_doublons_tab219_maria_regim()
             for filtered_df in filtered_dfs:
                 if not filtered_df.empty:
                     st.dataframe(filtered_df)
                     break
+
+    if st.checkbox("Modifier une ligne existante",key="tab219modi"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Région", selected_row['Région'])
+            departement = st.text_input("Département", selected_row['Département'])
+            annee = st.text_input("Année", selected_row['Année'])
+            reg_mat_bien_com = st.text_input("Régime matrimonial bien commun",
+                                               selected_row['Regime Matrimonial Bien Commun'])
+            reg_mat_bien_sep = st.text_input("Régime matrimonial bien séparé",
+                                               selected_row['Regime Matrimonial Bien Separé'])
+
+            if st.button("Modifier la ligne"):
+                success = data_p2.modifier_tab219_maria_regim(selected_id, direction, region, departement, annee,
+                                                      reg_mat_bien_com, reg_mat_bien_sep)
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
 
     return
 
@@ -416,12 +591,37 @@ def page_tab2110_mariage_civil():
 
         ]
 
-        # Afficher les données de la table avec filtres
-        if st.button('Afficher les données de la table', key="tab2110AAB"):
+        st.write("NB: Un double clique supprime les doublons")
+        if st.button('Recherche de  données de la table', key="tab2110AAB"):
+            data_p2.supprimer_doublons_tab2110_maria_centre_civil_dep()
             for filtered_df in filtered_dfs:
                 if not filtered_df.empty:
                     st.dataframe(filtered_df)
                     break
+
+    if st.checkbox("Modifier une ligne existante",key="tab2110modi"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Région", selected_row['Région'])
+            departement = st.text_input("Département", selected_row['Département'])
+            annee = st.text_input("Année", selected_row['Année'])
+            centre_etat_civil = st.text_input("Centre état civil", selected_row['Centre état civil'])
+            nat_coupl_ivoi = st.text_input("Couple ivoirien", selected_row['Couple ivoirien'])
+            nat_coupl_mixte = st.text_input("Couple mixte", selected_row['Couple mixte'])
+            nat_coupl_etrang = st.text_input("Couple étranger", selected_row['Couple étranger'])
+
+            if st.button("Modifier la ligne"):
+                success = data_p2.modifier_tab2110_maria_centre_civil_dep(selected_id, direction, region, departement, annee,
+                                                                  centre_etat_civil, nat_coupl_ivoi, nat_coupl_mixte,
+                                                                  nat_coupl_etrang)
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
 
     return
 
@@ -490,16 +690,40 @@ def page_tab2111_fait_matr_civils():
 
 
     # Afficher les données de la table avec filtres
-    if st.button('Afficher les données de la table', key="tab2111AAZ"):
-        filtered_dfs = [
-            df[(df['Année'] == selected_annee) & (df['Region'] == selected_region) & (
-                        df['Departement'] == selected_dep)],
-            df[(df['Année'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'].isna())]
-        ]
-        for filtered_df in filtered_dfs:
-            if not filtered_df.empty:
-                st.dataframe(filtered_df)
-                break
+        if st.button('Recherche de données de la table', key="tab2111AAZ"):
+            data_p2.supprimer_doublons_tab2111_fait_matr_civils()
+            filtered_dfs = [
+                df[(df['Année'] == selected_annee) & (df['Region'] == selected_region) & (
+                            df['Departement'] == selected_dep)],
+                df[(df['Année'] == selected_annee) & (df['Region'] == selected_region) & (df['Departement'].isna())]
+            ]
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
+
+    if st.checkbox("Modifier une ligne existante",key="tab2111modi"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Région", selected_row['Region'])
+            departement = st.text_input("Département", selected_row['Departement'])
+            annee = st.text_input("Année", selected_row['Année'])
+            type_centre_civil = st.text_input("Type de centre civil", selected_row['Type de centre civil'])
+            nbre_bien_commun = st.text_input("Régime de bien commun", selected_row['Régime de bien commun'])
+            nbre_bien_separe = st.text_input("Régime de bien séparé", selected_row['Régime de bien séparé'])
+
+            if st.button("Modifier la ligne"):
+                success = data_p2.modifier_tab2111_fait_matr_civils(selected_id, direction, region, departement, annee,
+                                                            type_centre_civil,
+                                                            nbre_bien_commun, nbre_bien_separe)
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
 
 
 # Page Streamlit
@@ -573,12 +797,36 @@ def page_tab2112_fait_civil():
         ]
 
     # Afficher les données de la table avec filtres
-    if st.button('Afficher les données de la table', key="tab2112AAB"):
-        for filtered_df in filtered_dfs:
-            if not filtered_df.empty:
-                st.dataframe(filtered_df)
-                break
+        if st.button('Recherche de  données de la table', key="tab2112AAB"):
+            data_p2.supprimer_doublons_tab2112_fait()
+            for filtered_df in filtered_dfs:
+                if not filtered_df.empty:
+                    st.dataframe(filtered_df)
+                    break
 
+    if st.checkbox("Modifier une ligne existante"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Région", selected_row['Region'])
+            departement = st.text_input("Département", selected_row['Departement'])
+            sous_prefecture = st.text_input("Sous-prefecture", selected_row['Sous-prefecture'])
+            faits_civil = st.text_input("Faits Civil", selected_row['Faits Civil'])
+            type_etat_civil = st.text_input("Type Etat Civil", selected_row['Type Etat Civil'])
+            annee = st.text_input("Année", selected_row['Annee'])
+            nombre_fait = st.text_input("Nombre Fait", selected_row['Nombre Fait'])
+
+            if st.button("Modifier la ligne"):
+                success = data_p2.modifier_tab2112_fait(selected_id, direction, region, departement, sous_prefecture,
+                                                faits_civil,
+                                                type_etat_civil, annee, nombre_fait)
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
     return
 
 
@@ -644,8 +892,41 @@ def page_tab2113_naiss_enreg_reg_dep():
                 df['Sous-préfecture'].isna())]
         ]
 
+    if st.checkbox("Modifier une ligne existante","tab2113modiA"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Région", selected_row['Région'])
+            departement = st.text_input("Département", selected_row['Département'])
+            sous_prefecture = st.text_input("Sous-préfecture", selected_row['Sous-préfecture'])
+            annee = st.text_input("Année", selected_row['Année'])
+            faits_civil = st.text_input("Faits Civil", selected_row['Faits Civil'])
+            type_de_centre_civil = st.text_input("Type de Centre Civil", selected_row['Type de Centre Civil'])
+            dans_les_delais_3_mois = st.text_input("Dans les délais (3 mois)",
+                                                         selected_row['Dans les délais (3 mois)'])
+            hors_delai_4_12_mois = st.text_input("Hors délai (4-12 mois)", selected_row['Hors délai (4-12 mois)'])
+            hors_delai_plus_de_12_mois = st.text_input("Hors délai (plus de 12 mois)",
+                                                             selected_row['Hors délai (plus de 12 mois)'])
+            total_faits_naissance = st.text_input("Total Faits Naissance", selected_row['Total Faits Naissance'])
+
+            if st.button("Modifier la ligne",key="tab2113modi"):
+                success = data_p2.modifier_tab2113_fait_civi_naiss(selected_id, direction, region, departement,
+                                                               sous_prefecture, annee,
+                                                               faits_civil, type_de_centre_civil,
+                                                               dans_les_delais_3_mois,
+                                                               hors_delai_4_12_mois, hors_delai_plus_de_12_mois,
+                                                               total_faits_naissance)
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
+
         # Afficher les données de la table avec filtres
-        if st.button('Afficher les données de la table', key="tab2113AAB"):
+        if st.button('Recherche de données de la table', key="tab2113AAB"):
+            data_p2.supprimer_doublons_tab2113_fait_civi_naiss()
             for filtered_df in filtered_dfs:
                 if not filtered_df.empty:
                     st.dataframe(filtered_df)
@@ -716,13 +997,15 @@ def page_tab2114_fait_civi_deces():
         ]
 
         # Afficher les données de la table avec filtres
-        if st.button('Afficher les données de la table', key="tab2114AAB"):
+        st.write("NB: Un double clique supprime les données doublons")
+        if st.button('Recherche de données de la table', key="tab2114AAB"):
+            data_p2.supprimer_doublons_tab2114_fait_civi_deces()
             for filtered_df in filtered_dfs:
                 if not filtered_df.empty:
                     st.dataframe(filtered_df)
                     break
 
-    if st.checkbox("Modifier une ligne existante"):
+    if st.checkbox("Modifier une ligne existante",key="tab2114modCh"):
         selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
 
         if selected_id:
@@ -753,11 +1036,6 @@ def page_tab2114_fait_civi_deces():
                     st.success("La ligne a été modifiée avec succès!")
                 else:
                     st.error("Une erreur s'est produite lors de la modification de la ligne.")
-    if st.button("Supprimer les doublons",key="tab2114doub"):
-        if data_p2.supprimer_doublons_tab2114_fait_civi_deces():
-            st.success("Les doublons ont été supprimés avec succès!")
-        else:
-            st.error("Une erreur s'est produite lors de la suppression des doublons.")
 
     return
 
@@ -827,19 +1105,49 @@ def page_tab2115_fait_naiss_deces():
             df[(df['Année'] == selected_annee) & (df['Département'] == selected_dep) & (df['Sous-préfecture'].isna())],
             df[(df['Année'] == selected_annee) & (df['Département'].isna()) & (df['Sous-préfecture'].isna())]
         ]
-
+        st.write("NB: Un double clique supprime les données doublons")
         # Afficher les données de la table avec filtres
-        if st.button('Afficher les données de la table', key="tab2115AAB"):
+        if st.button('Recherche de données de la table', key="tab2115AAB"):
+            data_p2.supprimer_doublons_tab2115_fait_naiss_deces()
             for filtered_df in filtered_dfs:
                 if not filtered_df.empty:
                     st.dataframe(filtered_df)
                     break
 
-    # Bouton pour supprimer les doublons
-    if st.button("Supprimer les doublons",key="tab2115doub"):
-        if data_p2.supprimer_doublons_tab2115_fait_naiss_deces():
-            st.success("Les doublons ont été supprimés avec succès!")
-        else:
-            st.error("Une erreur s'est produite lors de la suppression des doublons.")
+    if st.checkbox("Modifier une ligne existante",key="tab2115chmodi"):
+        selected_id = st.selectbox("Choisir l'ID de la ligne à modifier", df['ID'])
+
+        if selected_id:
+            selected_row = df[df['ID'] == selected_id].iloc[0]
+
+            direction = st.text_input("Direction", selected_row['Direction'])
+            region = st.text_input("Région", selected_row['Région'])
+            departement = st.text_input("Département", selected_row['Département'])
+            sous_prefecture = st.text_input("Sous-préfecture", selected_row['Sous-préfecture'])
+            annee = st.number_input("Année", selected_row['Année'])
+            nbre_naiss_centr_princ = st.number_input("Naissances Centre Principal",
+                                                     selected_row['Naissance enregistrées dans Centre principal'])
+            nbre_naiss_centr_second = st.number_input("Naissances Centre Secondaire",
+                                                      selected_row['Naissance enregistrées dans Centre secondaire'])
+            nbre_total_naiss = st.number_input("Total Naissances", selected_row['Naissance totale  enregistrée'])
+            nbre_deces_centr_princ = st.number_input("Décès Centre Principal",
+                                                     selected_row['Décès enregistrés dans Centre principal'])
+            nbre_deces_centr_second = st.number_input("Décès Centre Secondaire",
+                                                      selected_row['Décès enregistrés dans Centre secondaire'])
+            nbre_total_deces = st.number_input("Total Décès", selected_row['Décès total  enregistré'])
+
+            if st.button("Modifier la ligne",key="tab2115modi"):
+                success = data_p2.modifier_tab2115_fait_naiss_deces(selected_id, direction, region, departement,
+                                                            sous_prefecture, annee,
+                                                            nbre_naiss_centr_princ, nbre_naiss_centr_second,
+                                                            nbre_total_naiss,
+                                                            nbre_deces_centr_princ, nbre_deces_centr_second,
+                                                            nbre_total_deces)
+                if success:
+                    st.success("La ligne a été modifiée avec succès!")
+                else:
+                    st.error("Une erreur s'est produite lors de la modification de la ligne.")
+
+
 
     return
