@@ -1008,13 +1008,7 @@ def page_tab2113_naiss_enreg_reg_dep():
                 else:
                     st.error("Une erreur s'est produite lors de la modification de la ligne.")
 
-        # Afficher les données de la table avec filtres
-        if st.button('Recherche de données de la table', key="tab2113AAB"):
-            data_p2.supprimer_doublons_tab2113_fait_civi_naiss()
-            for filtered_df in filtered_dfs:
-                if not filtered_df.empty:
-                    st.dataframe(filtered_df)
-                    break
+
 
     return
 
