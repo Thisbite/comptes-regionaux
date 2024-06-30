@@ -27,7 +27,7 @@ def presentation():
     st.header("Processus de téléchargement des données")
     st.markdown("""
     1. **Cocher "obtenir les données"**
-    2. **Choisir les références de la donnée**
+    2. **Choisir la localité de la donnée**
     3. **Cliquer sur "Rechercher la donnée" et télécharger le résultat**
     """)
 

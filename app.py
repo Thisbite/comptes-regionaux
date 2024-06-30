@@ -7,7 +7,7 @@ import partie_I
 import partie_II
 
 # Configuration de la page
-st.set_page_config(page_title="Comptes Régionaux", page_icon="👗", layout="wide")
+st.set_page_config(page_title="Comptes Régionaux", page_icon="📊", layout="wide")
 
 # CSS pour styliser le contenu
 st.markdown("""
@@ -32,7 +32,8 @@ st.markdown("""
 st.image("images.png", width=200)  # Remplacez "images.png" par le chemin réel de votre logo
 
 # Titre de l'application
-st.title("Saisie des données")
+st.title("Plateforme de saisie des données des Annuaires Statistiques")
+st.write("------------------------------------------------------------")
 
 # Sidebar menu
 st.sidebar.title("Menu")
