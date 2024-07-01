@@ -7,7 +7,7 @@ def presentation():
     ### Présentation de l'application de saisie
     - **Application web et interactive**
     - **Application liée à une base de données Sqlite3**
-    - **Langage de requête : SQL, [Python](https://colab.research.google.com/drive/1oBqwcSMb4YTrn0NFUiQzJCiZ65uIay_S?hl=fr#scrollTo=OplM7o6w0vdS), R,Stata etc...**
+    - **Langage de requête : SQL, [Python](https://colab.research.google.com/drive/1oBqwcSMb4YTrn0NFUiQzJCiZ65uIay_S?usp=sharing), R,Stata etc...**
     """)
 
     # Processus de saisie
