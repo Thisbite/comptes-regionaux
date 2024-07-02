@@ -6,9 +6,102 @@ DATABASE = "db_annuaire_stat.db"
 conn = sqlite3.connect(DATABASE)
 cursor = conn.cursor()
 
-#cursor.execute("DROP TABLE existence_partis")
-#cursor.execute("DROP TABLE tab_repa_deput_pol_sex_dep")
-#cursor.execute("DROP TABLE tab_mair_recon_nvl_dep")
+
+
+
+
+
+def creer_table():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS utilisateurs (
+                        id INTEGER PRIMARY KEY,
+                        username TEXT UNIQUE,
+                        password TEXT,
+                        role TEXT
+                      )''')
+
+    conn.commit()
+    conn.close()
+
+
+
+creer_table()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def enregistrer_utilisateur(username, password, role):
     password_hashed = hashlib.sha256(password.encode()).hexdigest()
@@ -31,29 +124,6 @@ def verifier_utilisateur(username, password):
     if user:
         return {'id': user[0], 'username': user[1], 'role': user[3]}
     return None
-
-
-
-
-def creer_table():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
-
-
-    cursor.execute('''CREATE TABLE IF NOT EXISTS utilisateurs (
-                        id INTEGER PRIMARY KEY,
-                        username TEXT UNIQUE,
-                        password TEXT,
-                        role TEXT
-                      )''')
-
-    conn.commit()
-    conn.close()
-
-
-
-creer_table()
 
 
 
