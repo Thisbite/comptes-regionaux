@@ -91,9 +91,9 @@ def presentation():
     st.markdown('<div class="example-title">Exemple de transformation du tableau Word en canevas Excel</div>',
                 unsafe_allow_html=True)
     st.write("Le tableau Word")
-    st.image("nom_word.png", caption="Le tableau Word", use_column_width=True, output_format='auto')
+    st.image("other_file/nom_word.png", caption="Le tableau Word", use_column_width=True, output_format='auto')
     st.write("Résultat en canevas Excel")
-    st.image("nom_excel.png", use_column_width=True, output_format='auto')
+    st.image("other_file/nom_excel.png", use_column_width=True, output_format='auto')
 
     # Fermer le cadre de l'exemple
     st.markdown('</div>', unsafe_allow_html=True)

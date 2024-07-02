@@ -5,8 +5,8 @@ library(RSQLite)
 #Mon environnement de travail
 #"/Users/mac/Desktop/Projet Konhin Yamousso/GithubProjet/streamlit-test-v2/streamlitV3"
 # Mon chemin d'accès
-db_path1 <- "db_annuaire_stat.db"
-db_path<-"comptes_regionaux.db"
+db_path <- "db_annuaire_stat.db"
+db_path1<-"comptes_regionaux.db"
 
 # Établir la connexion
 con <- dbConnect(RSQLite::SQLite(), dbname = db_path)
@@ -15,13 +15,10 @@ tables <- dbListTables(con)
 print(tables)
 
 # Exploiter une table ou un tableau
-table_name <- "tab2113_fait_civi_naiss"  
+table_name <- "tab2114_fait_civi_deces"
 df <- dbReadTable(con, table_name)
-# Afficher les premières lignes de la table
-print(head(df))  
-
-#Vue simple
 View(df)
+# Afficher les premières ligneR
 # Obtenir la liste des noms des colonnes de la table
 columns <- dbListFields(con, table_name)
 print(columns)

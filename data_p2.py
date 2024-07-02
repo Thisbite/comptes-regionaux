@@ -992,7 +992,7 @@ def supprimer_doublons_tab2111_fait_matr_civils():
 
 
 def enregistrement_tab2112_fait(direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait):
-    conn = sqlite3.connect('comptes_regionaux.db')  # Remplacez 'your_database.db' par le nom de votre base de données
+    conn = sqlite3.connect('other_file/comptes_regionaux.db')  # Remplacez 'your_database.db' par le nom de votre base de données
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO tab2112_faits_civils (direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait)
@@ -1003,7 +1003,7 @@ def enregistrement_tab2112_fait(direction, region, departement, sous_prefecture,
 
 
 def obtenir_tab2112_fait():
-    conn = sqlite3.connect('comptes_regionaux.db')  # Remplacez 'your_database.db' par le nom de votre base de données
+    conn = sqlite3.connect('other_file/comptes_regionaux.db')  # Remplacez 'your_database.db' par le nom de votre base de données
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM tab2112_faits_civils')
     data = cursor.fetchall()
@@ -1011,7 +1011,7 @@ def obtenir_tab2112_fait():
     return df_data
 
 def modifier_tab2112_fait(id, direction, region, departement, sous_prefecture, faits_civil, type_etat_civil, annee, nombre_fait):
-    conn = sqlite3.connect('comptes_regionaux.db')
+    conn = sqlite3.connect('other_file/comptes_regionaux.db')
     cursor = conn.cursor()
 
     try:
@@ -1033,7 +1033,7 @@ def modifier_tab2112_fait(id, direction, region, departement, sous_prefecture, f
 
 
 def supprimer_doublons_tab2112_fait():
-    conn = sqlite3.connect('comptes_regionaux.db')
+    conn = sqlite3.connect('other_file/comptes_regionaux.db')
     cursor = conn.cursor()
 
     try:

@@ -29,7 +29,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Afficher le logo de l'entreprise
-st.image("images.png", width=75)  # Remplacez "images.png" par le chemin réel de votre logo
+st.image("other_file/images.png", width=75)  # Remplacez "images.png" par le chemin réel de votre logo
 
 # Titre de l'application
 st.title("Plateforme de saisie des données des Annuaires Statistiques")

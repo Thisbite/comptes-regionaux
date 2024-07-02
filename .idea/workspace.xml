@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce5a53c1-f6b2-4138-9475-23503ea89219" name="Changes" comment="" />
+    <list default="true" id="ce5a53c1-f6b2-4138-9475-23503ea89219" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/comptes_regionaux.db" beforeDir="false" afterPath="$PROJECT_DIR$/other_file/comptes_regionaux.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_p2.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_p2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db_annuaire_stat.db" beforeDir="false" afterPath="$PROJECT_DIR$/db_annuaire_stat.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo_r.R" beforeDir="false" afterPath="$PROJECT_DIR$/other_file/demo_r.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images.png" beforeDir="false" afterPath="$PROJECT_DIR$/other_file/images.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nom_excel.png" beforeDir="false" afterPath="$PROJECT_DIR$/other_file/nom_excel.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nom_word.png" beforeDir="false" afterPath="$PROJECT_DIR$/other_file/nom_word.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/note_method.py" beforeDir="false" afterPath="$PROJECT_DIR$/note_method.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/partie_I.py" beforeDir="false" afterPath="$PROJECT_DIR$/partie_I.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/r_demo2.R" beforeDir="false" afterPath="$PROJECT_DIR$/r_demo2.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/streamlitV3.Rproj" beforeDir="false" afterPath="$PROJECT_DIR$/other_file/streamlitV3.Rproj" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,6 +54,11 @@
     &quot;git-widget-placeholder&quot;: &quot;master&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/other_file" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
