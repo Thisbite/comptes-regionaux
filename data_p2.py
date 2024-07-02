@@ -8,6 +8,7 @@ cursor = conn.cursor()
 
 
 
+
 def creer_table_part2():
     cursor.execute(
         '''
